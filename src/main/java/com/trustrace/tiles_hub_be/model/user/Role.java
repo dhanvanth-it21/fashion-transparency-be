@@ -1,4 +1,4 @@
-package com.trustrace.tiles_hub_be.model;
+package com.trustrace.tiles_hub_be.model.user;
 
 
 import lombok.AllArgsConstructor;
@@ -21,16 +21,5 @@ public class Role {
             this.name = name;
         }
 
-        //----------------------getters and setters-----------------------
-//        public String getId() {
-//                return id;
-//        }
-//
-//        public String getName() {
-//                return name;
-//        }
-//
-//        public void setName(String name) {
-//                this.name = name;
-//        }
+
 }

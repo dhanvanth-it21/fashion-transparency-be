@@ -12,7 +12,7 @@ import java.util.Set;
 public class SignUpRequest {
 
     private String username;
-    private String emailId;
+    private String email;
     private String password;
     private Set<String> roles;
 
@@ -26,12 +26,12 @@ public class SignUpRequest {
 //        this.username = username;
 //    }
 //
-//    public String getEmailId() {
-//        return emailId;
+//    public String getEmail() {
+//        return email;
 //    }
 //
-//    public void setEmailId(String emailId) {
-//        this.emailId = emailId;
+//    public void setEmail(String email) {
+//        this.email = email;
 //    }
 //
 //    public String getPassword() {

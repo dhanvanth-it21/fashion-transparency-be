@@ -15,14 +15,14 @@ public class JwtResponse {
     private String type = "Bearer";
     private String id;
     private String username;
-    private String emailId;
+    private String email;
     private List<String> roles;
 
-    public JwtResponse(String accessToken, String id, String username, String emailId, List<String> roles) {
+    public JwtResponse(String accessToken, String id, String username, String email, List<String> roles) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
-        this.emailId = emailId;
+        this.email = email;
         this.roles = roles;
     }
 
@@ -51,12 +51,12 @@ public class JwtResponse {
 //        this.username = username;
 //    }
 //
-//    public String getEmailId() {
-//        return emailId;
+//    public String getEmail() {
+//        return email;
 //    }
 //
-//    public void setEmailId(String emailId) {
-//        this.emailId = emailId;
+//    public void setEmail(String email) {
+//        this.email = email;
 //    }
 //
 //    public List<String> getRoles() {

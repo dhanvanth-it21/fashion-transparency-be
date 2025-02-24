@@ -1,7 +1,7 @@
 package com.trustrace.tiles_hub_be.service;
 
 import com.trustrace.tiles_hub_be.dao.UserEntityDao;
-import com.trustrace.tiles_hub_be.model.UserEntity;
+import com.trustrace.tiles_hub_be.model.user.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +22,8 @@ public class UserEntityService {
         return isExists;
     }
 
-    public boolean existsByEmailId(String emailId) {
-        Boolean isExists = userEntityDao.existsByEmailId(emailId);
+    public boolean existsByEmail(String email) {
+        Boolean isExists = userEntityDao.existsByEmail(email);
         return isExists;
     }
 

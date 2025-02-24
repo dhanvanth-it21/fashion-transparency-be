@@ -1,6 +1,6 @@
 package com.trustrace.tiles_hub_be.template;
 
-import com.trustrace.tiles_hub_be.model.UserEntity;
+import com.trustrace.tiles_hub_be.model.user.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -27,9 +27,9 @@ public class UserEntityTemplate {
         return isExists;
     }
 
-    public Boolean existsByEmailId(String emailId) {
+    public Boolean existsByEmail(String email) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("emailId").is(emailId));
+        query.addCriteria(Criteria.where("email").is(email));
         Boolean isExists = mongoTemplate.exists(query, UserEntity.class);
         return isExists;
     }

@@ -1,4 +1,4 @@
-package com.trustrace.tiles_hub_be.model;
+package com.trustrace.tiles_hub_be.model.user;
 
 public enum UserRole {
     ROLE_ADMIN,

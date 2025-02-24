@@ -1,9 +1,8 @@
 package com.trustrace.tiles_hub_be.controllers;
 
 
-import com.trustrace.tiles_hub_be.model.Role;
-import com.trustrace.tiles_hub_be.model.UserEntity;
-import com.trustrace.tiles_hub_be.model.UserRole;
+import com.trustrace.tiles_hub_be.model.user.Role;
+import com.trustrace.tiles_hub_be.model.user.UserEntity;
 import com.trustrace.tiles_hub_be.payload.request.LoginRequest;
 import com.trustrace.tiles_hub_be.payload.request.SignUpRequest;
 import com.trustrace.tiles_hub_be.payload.response.JwtResponse;
@@ -12,7 +11,6 @@ import com.trustrace.tiles_hub_be.security.jwt.JwtUtils;
 import com.trustrace.tiles_hub_be.security.services.UserDetailsImpl;
 import com.trustrace.tiles_hub_be.service.RoleService;
 import com.trustrace.tiles_hub_be.service.UserEntityService;
-import com.trustrace.tiles_hub_be.template.RoleTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -67,7 +65,7 @@ public class AuthController {
         }
 
         //if email already exists
-        if(userEntityService.existsByEmailId(signUpRequest.getEmailId())) {
+        if(userEntityService.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
@@ -76,7 +74,7 @@ public class AuthController {
         //Create a new user account
         UserEntity user = new UserEntity(
                 signUpRequest.getUsername(),
-                signUpRequest.getEmailId(),
+                signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()) // endcoding the password
         );
 
@@ -158,7 +156,7 @@ public class AuthController {
                         jwt,
                         userDetails.getId(),
                         userDetails.getUsername(),
-                        userDetails.getEmailId(),
+                        userDetails.getEmail(),
                         roles
                 )
         );

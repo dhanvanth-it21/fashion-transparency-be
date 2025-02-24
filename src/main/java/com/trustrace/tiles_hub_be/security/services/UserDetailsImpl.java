@@ -1,7 +1,7 @@
 package com.trustrace.tiles_hub_be.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.trustrace.tiles_hub_be.model.UserEntity;
+import com.trustrace.tiles_hub_be.model.user.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +17,7 @@ public class UserDetailsImpl implements UserDetails {
 
     private String id; // Unique identifier for the user
     private String username; // Username of the user
-    private String emailId; // EmailId address of the user
+    private String email; // Email address of the user
 
     @JsonIgnore // Prevent serialization of the password field
     private String password; // Password of the user
@@ -29,15 +29,15 @@ public class UserDetailsImpl implements UserDetails {
      *
      * @param id           The unique identifier of the user.
      * @param username     The username of the user.
-     * @param emailId        The email of the user.
+     * @param email        The email of the user.
      * @param password     The password of the user.
      * @param authorities  The collection of user's authorities.
      */
-    public UserDetailsImpl(String id, String username, String emailId, String password,
+    public UserDetailsImpl(String id, String username, String email, String password,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id; // Set user ID
         this.username = username; // Set username
-        this.emailId = emailId; // Set email
+        this.email = email; // Set email
         this.password = password; // Set password
         this.authorities = authorities; // Set authorities
     }
@@ -58,7 +58,7 @@ public class UserDetailsImpl implements UserDetails {
         return new UserDetailsImpl(
                 userEntity.getId(), // Set user ID
                 userEntity.getName(), // Set username
-                userEntity.getEmailId(), // Set email
+                userEntity.getEmail(), // Set email
                 userEntity.getPassword(), // Set password
                 authorities // Set authorities
         );
@@ -68,8 +68,8 @@ public class UserDetailsImpl implements UserDetails {
         return id; // Return user ID
     }
 
-    public String getEmailId() {
-        return emailId; // Return email
+    public String getEmail() {
+        return email; // Return email
     }
 
     @Override
