@@ -1,5 +1,6 @@
 package com.trustrace.tiles_hub_be.controllers;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,5 +19,25 @@ public class TestController {
     @GetMapping("/all") // Map GET requests to "/api/test/all"
     public String allAccess() {
         return "Public Content."; // Return a message accessible by anyone
+    }
+
+
+
+    @GetMapping("/sa")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public String superAdminAccess() {
+        return "Super Admin Content";
+    }
+
+    @GetMapping("/a")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminAccess() {
+        return "Admin Content";
+    }
+
+    @GetMapping("/e")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public String employeeAccess() {
+        return "Employee Content";
     }
 }

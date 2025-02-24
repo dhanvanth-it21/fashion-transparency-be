@@ -1,6 +1,9 @@
 package com.trustrace.tiles_hub_be.model;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,7 +11,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "users")
 public class UserEntity {
 
@@ -47,45 +52,45 @@ public class UserEntity {
 
     //----------------------getters and setters-----------------------
 
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmailId() {
-        return emailId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
+//    public String getId() {
+//        return id;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public String getEmailId() {
+//        return emailId;
+//    }
+//
+//    public String getPassword() {
+//        return password;
+//    }
 
     public Boolean getActive() {
         return isActive;
     }
 
-    public String getPhone() {
-        return phone;
-    }
+//    public String getPhone() {
+//        return phone;
+//    }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public Date getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
+//    public String getAddress() {
+//        return address;
+//    }
+//
+//    public Date getCreatedDate() {
+//        return createdDate;
+//    }
+//
+//    public Date getUpdatedDate() {
+//        return updatedDate;
+//    }
+//
+//    public Set<Role> getRoles() {
+//        return roles;
+//    }
 
     public void setName(String name) {
         this.name = name;
