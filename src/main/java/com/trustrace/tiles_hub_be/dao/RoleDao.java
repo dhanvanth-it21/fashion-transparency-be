@@ -14,7 +14,7 @@ public class RoleDao {
     @Autowired
     private RoleTemplate roleTemplate;
 
-    public Optional<Role> findByName(UserRole userRole) {
+    public Optional<Role> findByName(String userRole) {
         Optional<Role> role= roleTemplate.findByName(userRole);
         return role;
     }

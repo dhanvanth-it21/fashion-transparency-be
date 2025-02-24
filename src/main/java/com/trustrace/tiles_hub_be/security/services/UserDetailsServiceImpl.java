@@ -28,9 +28,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional // Ensures that the method is transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Attempt to find the user by username
         UserEntity userEntity = userEntityService.findByName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
+        // Return UserDetails implementation for the found user
         return UserDetailsImpl.build(userEntity);
     }
 

@@ -17,10 +17,11 @@ public class RoleTemplate {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public Optional<Role> findByName(UserRole userRole) {
+    public Optional<Role> findByName(String userRole) {
         Query query = new Query();
         query.addCriteria(Criteria.where("name").is(userRole));
         Role role = mongoTemplate.findOne(query, Role.class);
         return Optional.ofNullable(role);
     }
+
 }

@@ -45,7 +45,7 @@ public class UserDetailsImpl implements UserDetails {
 /**
      * Builds a UserDetailsImpl instance from a User object.
      *
-     * @param user The User object.
+     * @param userEntity The User object.
      * @return A UserDetailsImpl instance.
      */
     public static UserDetailsImpl build(UserEntity userEntity) {

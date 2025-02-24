@@ -12,6 +12,7 @@ import com.trustrace.tiles_hub_be.security.jwt.JwtUtils;
 import com.trustrace.tiles_hub_be.security.services.UserDetailsImpl;
 import com.trustrace.tiles_hub_be.service.RoleService;
 import com.trustrace.tiles_hub_be.service.UserEntityService;
+import com.trustrace.tiles_hub_be.template.RoleTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,6 +46,8 @@ public class AuthController {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+
 
 
     /**
@@ -82,20 +85,25 @@ public class AuthController {
 
         //assign the requested role or the default employee role
         if(strRoles == null) {
-            Role employeeRole = roleService.findByName(UserRole.ROLE_EMPLOYEE)
+            Role employeeRole = roleService.findByName("ROLE_EMPLOYEE")
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(employeeRole);
         }
         else {
             strRoles.forEach(role -> {
                 switch (role) {
+                    case "super_admin":
+                        Role superAdminRole = roleService.findByName("ROLE_SUPER_ADMIN")
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(superAdminRole);
+                        break;
                     case "admin":
-                        Role adminRole = roleService.findByName(UserRole.ROLE_ADMIN)
+                        Role adminRole = roleService.findByName("ROLE_ADMIN")
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
                         break;
                     default:
-                        Role employeeRole = roleService.findByName(UserRole.ROLE_EMPLOYEE)
+                        Role employeeRole = roleService.findByName("ROLE_EMPLOYEE")
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(employeeRole);
                 }

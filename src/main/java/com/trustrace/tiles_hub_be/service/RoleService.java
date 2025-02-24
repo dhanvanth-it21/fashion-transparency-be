@@ -14,7 +14,7 @@ public class RoleService {
     @Autowired
     private RoleDao roleDao;
 
-    public Optional<Role> findByName(UserRole userRole) {
+    public Optional<Role> findByName(String userRole) {
         Optional<Role> role= roleDao.findByName(userRole);
         return role;
     }
