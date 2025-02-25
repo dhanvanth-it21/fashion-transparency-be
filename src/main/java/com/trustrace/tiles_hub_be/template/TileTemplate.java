@@ -1,5 +1,7 @@
 package com.trustrace.tiles_hub_be.template;
 
+import com.mongodb.client.result.DeleteResult;
+import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -8,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class TileTemplate {
@@ -30,14 +33,24 @@ public class TileTemplate {
         return mongoTemplate.findAll(Tile.class);
     }
 
-    // Find a tile by name
+    // Update the tile
     public Tile update(Tile tile) {
-        return mongoTemplate.save(tile);
+        return mongoTemplate.save(tile); //updates the already existing tile with the same id
+    }
+
+    //tile existence
+    public boolean isExists(String id) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("_id").is(id));
+        return mongoTemplate.exists(query,Tile.class);
     }
 
     // Delete a tile by id
-    public void deleteById(String id) {
+    public DeleteResult deleteById(String id) {
         Query query = new Query(Criteria.where("_id").is(id));
-        mongoTemplate.remove(query, Tile.class);
+        DeleteResult deleteResult = mongoTemplate.remove(query, Tile.class);
+        return deleteResult;
     }
+
+
 }

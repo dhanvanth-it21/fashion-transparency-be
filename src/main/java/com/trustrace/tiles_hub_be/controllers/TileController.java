@@ -49,10 +49,11 @@ public class TileController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deleteTile(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<Void>> deleteTile(@PathVariable String id) {
         tileService.deleteTile(id);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body(ResponseUtil.success("Tile Deleted Successfully", null, null));
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body(ResponseUtil.success("Deleted tile with Id: " + id, null, null));
+
     }
 }

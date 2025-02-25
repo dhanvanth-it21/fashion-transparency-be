@@ -1,5 +1,6 @@
 package com.trustrace.tiles_hub_be.dao;
 
+import com.mongodb.client.result.DeleteResult;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.template.TileTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,12 @@ public class TileDao {
         return tileTemplate.update(tile);
     }
 
-    public void deleteTile(String id) {
-        tileTemplate.deleteById(id);
+    public boolean checkTileIsExists(String id) {
+        return tileTemplate.isExists(id);
+    }
+
+    public DeleteResult deleteTile(String id) {
+        return tileTemplate.deleteById(id);
     }
 
 }
