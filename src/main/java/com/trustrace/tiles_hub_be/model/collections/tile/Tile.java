@@ -31,6 +31,10 @@ public class Tile {
     private TileSubCategory subCategory; // enum
     private Finishing finishing;
 
+    private int minimumStockLevel;
+    private int totalStockReceived;
+    private int totalStockDispatched;
+
     @CreatedDate
     private Date createdAt = new Date();
 
