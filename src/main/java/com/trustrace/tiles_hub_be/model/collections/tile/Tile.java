@@ -22,7 +22,7 @@ public class Tile {
 
     private String skuCode; //auto generated
     private TileSize tileSize; //enum
-    private String brandId;
+    private String brandName;
     private String modelName;
     private String color;
     private int qty; // number of boxes
@@ -42,7 +42,7 @@ public class Tile {
     private Date updatedAt = new Date();
 
 
-    public Tile(Finishing finishing, TileSubCategory subCategory, TileCategory category, int piecesPerBox, int qty, String color, String modelName, String brandId, TileSize tileSize, String skuCode) {
+    public Tile(Finishing finishing, TileSubCategory subCategory, TileCategory category, int piecesPerBox, int qty, String color, String modelName, String brandName, TileSize tileSize, String skuCode) {
         this.finishing = finishing;
         this.subCategory = subCategory;
         this.category = category;
@@ -50,7 +50,7 @@ public class Tile {
         this.qty = qty;
         this.color = color;
         this.modelName = modelName;
-        this.brandId = brandId;
+        this.brandName = brandName;
         this.tileSize = tileSize;
         this.skuCode = skuCode;
     }

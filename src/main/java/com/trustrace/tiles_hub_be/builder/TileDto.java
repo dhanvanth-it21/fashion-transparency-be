@@ -21,7 +21,7 @@ public class TileDto {
 
     private String skuCode;
     private TileSize tileSize;
-    private String brandId;
+    private String brandName;
     private String modelName;
     private String color;
     private int qty;
@@ -29,9 +29,6 @@ public class TileDto {
     private TileCategory category;
     private TileSubCategory subCategory;
     private Finishing finishing;
-    private Date createdAt;
-    private Date updatedAt;
-
-
+    private int minimumStockLevel;
 
 }
