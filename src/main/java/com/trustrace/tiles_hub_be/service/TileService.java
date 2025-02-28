@@ -8,6 +8,8 @@ import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.model.collections.tile.TileCategory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +32,8 @@ public class TileService {
     }
 
     public List<Tile> getAllTiles() {
-        return tileDao.getAllTiles();
+//        return tileDao.getAllTiles();
+        return null;
     }
 
     public Tile updateTile(Tile tile) {
@@ -72,8 +75,10 @@ public class TileService {
         return skuCode;
     }
 
-    public List<TileTableDto> getAllTilesTableDetails() {
-        return tileDao.getAllTiles().stream()
+    public Page<TileTableDto> getAllTilesTableDetails(int page, int size, String sortBy, String sortDirection) {
+        Page<Tile> paginated = tileDao.getAllTiles(page, size, sortBy, sortDirection);
+        List<Tile> tiles = paginated.getContent();
+        List<TileTableDto> tileTableDtos = tiles.stream()
                 .map(tile -> {
                     TileTableDto tileTableDto = new TileTableDto();
                     tileTableDto.set_id(tile.get_id());
@@ -85,6 +90,8 @@ public class TileService {
                     tileTableDto.setPiecesPerBox(tile.getPiecesPerBox());
                     return tileTableDto;
                 })
-                .collect(Collectors.toList());
+                .toList();
+        return new PageImpl<>(tileTableDtos, paginated.getPageable(), paginated.getTotalElements());
+
     }
 }

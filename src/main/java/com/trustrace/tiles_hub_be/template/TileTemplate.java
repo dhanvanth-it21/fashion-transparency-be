@@ -4,7 +4,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -30,9 +30,19 @@ public class TileTemplate {
     }
 
     // Find all tiles
-    public List<Tile> findAll() {
-        return mongoTemplate.findAll(Tile.class);
+    public Page<Tile> findAll(int page, int size, String sortBy, String sortDirection) {
+
+        Sort.Direction direction = sortDirection.toUpperCase().equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+        Query query = new Query().with(pageable);
+        List<Tile> tiles = mongoTemplate.find(query, Tile.class);
+
+        long total = mongoTemplate.count(new Query(), Tile.class);
+
+        return new PageImpl<>(tiles, pageable, total);
     }
+
 
     // Update the tile
     public Tile update(Tile tile) {

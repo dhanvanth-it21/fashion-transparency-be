@@ -4,6 +4,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.template.TileTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public class TileDao {
         return tileTemplate.findById(id);
     }
 
-    public List<Tile> getAllTiles() {
-        return tileTemplate.findAll();
+    public Page<Tile> getAllTiles(int page, int size, String sortBy, String sortDirection) {
+        return tileTemplate.findAll(page, size, sortBy, sortDirection);
     }
 
     public Tile updateTile(Tile tile) {
