@@ -32,8 +32,7 @@ public class Tile {
     private Finishing finishing;
 
     private int minimumStockLevel;
-    private int totalStockReceived;
-    private int totalStockDispatched;
+    private boolean archived = false;
 
     @CreatedDate
     private Date createdAt = new Date();

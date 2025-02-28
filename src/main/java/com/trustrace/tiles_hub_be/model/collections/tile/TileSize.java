@@ -7,7 +7,7 @@ public enum TileSize {
     SIZE_2X1("2x1"),
     SIZE_2X2("2x2"),
     SIZE_3X3("3x3"),
-    SIZE_4X2("4xx2"),
+    SIZE_4X2("4x2"),
     SIZE_4X4("4x4"),
     SIZE_6X4("6x4"),
     SIZE_8X4("8x4");

@@ -2,6 +2,7 @@ package com.trustrace.tiles_hub_be.service;
 
 import com.mongodb.client.result.DeleteResult;
 import com.trustrace.tiles_hub_be.builder.TileDto;
+import com.trustrace.tiles_hub_be.builder.TileTableDto;
 import com.trustrace.tiles_hub_be.dao.TileDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TileService {
@@ -48,8 +51,13 @@ public class TileService {
         }
     }
 
-    public void getLastCreatedTile() {
-
+    public int getLastCreatedTileSerialCode() {
+        String[] parts = new String[0];
+             Optional<Tile> tile = tileDao.getLastCreatedTile();
+             if(tile.isPresent()) {
+                 parts = tile.get().getSkuCode().split("-");
+             }
+        return Integer.parseInt(parts[parts.length - 1]);
     }
 
     public String generateSku(TileDto tileDto) {
@@ -58,8 +66,25 @@ public class TileService {
         String categoryCode = (tileDto.getCategory() == TileCategory.WALL) ? "W" : "F";
         String subCategoryCode = tileDto.getSubCategory().name().substring(0,1).toUpperCase();
         String finishingCode = tileDto.getFinishing().name().substring(0,1).toUpperCase();
-        String serialNumber = String.format("%05d",1);
+        int lastSerialCode = getLastCreatedTileSerialCode();
+        String serialNumber = String.format("%05d",lastSerialCode + 11);
         String skuCode =  brandCode+"-"+sizeCode+"-"+categoryCode+"-"+subCategoryCode+"-"+finishingCode+"-"+serialNumber;
         return skuCode;
+    }
+
+    public List<TileTableDto> getAllTilesTableDetails() {
+        return tileDao.getAllTiles().stream()
+                .map(tile -> {
+                    TileTableDto tileTableDto = new TileTableDto();
+                    tileTableDto.set_id(tile.get_id());
+                    tileTableDto.setSkuCode(tile.getSkuCode());
+                    tileTableDto.setTileSize(tile.getTileSize());
+                    tileTableDto.setBrandName(tile.getBrandName());
+                    tileTableDto.setModelName(tile.getModelName());
+                    tileTableDto.setQty(tile.getQty());
+                    tileTableDto.setPiecesPerBox(tile.getPiecesPerBox());
+                    return tileTableDto;
+                })
+                .collect(Collectors.toList());
     }
 }

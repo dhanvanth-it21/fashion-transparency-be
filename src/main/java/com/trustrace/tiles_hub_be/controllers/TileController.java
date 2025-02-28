@@ -1,5 +1,6 @@
 package com.trustrace.tiles_hub_be.controllers;
 
+import com.trustrace.tiles_hub_be.builder.TileTableDto;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ResponseUtil;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/tiles")
 public class TileController {
@@ -36,9 +37,16 @@ public class TileController {
                         .body(ResponseUtil.error("Tile Not Found", null));
     }
 
+
+
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Tile>>> getAllTiles() {
+        public ResponseEntity<ApiResponse<List<Tile>>> getAllTiles() {
         return ResponseEntity.ok(ResponseUtil.success("Tiles Fetched", tileService.getAllTiles(), null));
+    }
+
+    @GetMapping("/table-details")
+    public ResponseEntity<ApiResponse<List<TileTableDto>>> getAllTilesTableDetails() {
+        return ResponseEntity.ok(ResponseUtil.success("Tiles Fetched", tileService.getAllTilesTableDetails(), null));
     }
 
     @PutMapping("/{id}")

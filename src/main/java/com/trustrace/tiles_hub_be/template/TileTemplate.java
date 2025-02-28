@@ -4,6 +4,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -53,4 +54,10 @@ public class TileTemplate {
     }
 
 
+    public Optional<Tile> findLastCreatedTile() {
+        Query query = new Query();
+        query.limit(1);
+        query.with(Sort.by(Sort.Order.desc("createdAt")));
+        return Optional.ofNullable(mongoTemplate.findOne(query, Tile.class));
+    }
 }
