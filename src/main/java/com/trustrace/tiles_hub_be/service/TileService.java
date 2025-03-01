@@ -39,6 +39,12 @@ public class TileService {
 
     public Tile updateTile(Tile tile) {
         if(checkTileIsExists(tile.get_id())) {
+            TileDto tileDto = convertToTileDto(tile);
+            String skuCode = generateSku(tileDto);
+            String[] code = skuCode.split("-");
+            code[code.length - 1] = tile.getSkuCode().split("-")[code.length-1];
+            String newSkuCode = String.join("-", code);
+            tile.setSkuCode(newSkuCode);
             return tileDao.updateTile(tile);
         }
         throw new ResourceNotFoundException("Tile with ID " + tile.get_id() + " not found");
@@ -76,8 +82,8 @@ public class TileService {
         return skuCode;
     }
 
-    public Page<TileTableDto> getAllTilesTableDetails(int page, int size, String sortBy, String sortDirection) {
-        Page<Tile> paginated = tileDao.getAllTiles(page, size, sortBy, sortDirection);
+    public Page<TileTableDto> getAllTilesTableDetails(int page, int size, String sortBy, String sortDirection, String search) {
+        Page<Tile> paginated = tileDao.getAllTiles(page, size, sortBy, sortDirection, search);
         List<Tile> tiles = paginated.getContent();
         List<TileTableDto> tileTableDtos = tiles.stream()
                 .map(tile -> {
@@ -116,5 +122,22 @@ public class TileService {
                     .build();
         }
         return null;
+    }
+
+
+    private TileDto convertToTileDto(Tile tile) {
+        return TileDto.builder()
+                .skuCode(tile.getSkuCode())
+                .tileSize(tile.getTileSize())
+                .brandName(tile.getBrandName())
+                .modelName(tile.getModelName())
+                .color(tile.getColor())
+                .qty(tile.getQty())
+                .piecesPerBox(tile.getPiecesPerBox())
+                .category(tile.getCategory())
+                .subCategory(tile.getSubCategory())
+                .finishing(tile.getFinishing())
+                .minimumStockLevel(tile.getMinimumStockLevel())
+                .build();
     }
 }

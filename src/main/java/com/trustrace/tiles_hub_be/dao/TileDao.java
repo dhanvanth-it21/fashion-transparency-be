@@ -24,8 +24,8 @@ public class TileDao {
         return tileTemplate.findById(id);
     }
 
-    public Page<Tile> getAllTiles(int page, int size, String sortBy, String sortDirection) {
-        return tileTemplate.findAll(page, size, sortBy, sortDirection);
+    public Page<Tile> getAllTiles(int page, int size, String sortBy, String sortDirection, String search) {
+        return tileTemplate.findAll(page, size, sortBy, sortDirection, search);
     }
 
     public Tile updateTile(Tile tile) {

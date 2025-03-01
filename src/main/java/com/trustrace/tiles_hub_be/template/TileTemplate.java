@@ -30,15 +30,32 @@ public class TileTemplate {
     }
 
     // Find all tiles
-    public Page<Tile> findAll(int page, int size, String sortBy, String sortDirection) {
+    public Page<Tile> findAll(int page, int size, String sortBy, String sortDirection, String search){
 
         Sort.Direction direction = sortDirection.toUpperCase().equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
-        Query query = new Query().with(pageable);
+        Query query = new Query();
+        query.addCriteria(Criteria.where("archived").is(false));
+        if(search == null || search == "") {
+            //nothing to do
+        } else {
+            query.addCriteria(new Criteria().orOperator(
+                    Criteria.where("skuCode").regex(search, "i"),
+                    Criteria.where("tileSize").regex(search, "i"),
+                    Criteria.where("brandName").regex(search, "i"),
+                    Criteria.where("modelName").regex(search, "i"),
+                    Criteria.where("color").regex(search, "i"),
+                    Criteria.where("category").regex(search, "i"),
+                    Criteria.where("subCategory").regex(search, "i"),
+                    Criteria.where("finishing").regex(search, "i")
+            ));
+        }
+        long total = mongoTemplate.count(query, Tile.class);
+
+        query.with(pageable);
         List<Tile> tiles = mongoTemplate.find(query, Tile.class);
 
-        long total = mongoTemplate.count(new Query(), Tile.class);
 
         return new PageImpl<>(tiles, pageable, total);
     }
