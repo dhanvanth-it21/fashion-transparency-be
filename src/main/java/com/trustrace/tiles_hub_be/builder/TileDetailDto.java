@@ -8,8 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.Date;
 
@@ -17,8 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TileDto {
-
+public class TileDetailDto {
     private String skuCode;
     private TileSize tileSize;
     private String brandName;
@@ -30,6 +27,7 @@ public class TileDto {
     private TileSubCategory subCategory;
     private Finishing finishing;
     private int minimumStockLevel;
-
+    private Date createdAt;
+    private Date updatedAt;
 
 }

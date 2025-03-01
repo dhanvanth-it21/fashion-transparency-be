@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be.service;
 
 import com.mongodb.client.result.DeleteResult;
+import com.trustrace.tiles_hub_be.builder.TileDetailDto;
 import com.trustrace.tiles_hub_be.builder.TileDto;
 import com.trustrace.tiles_hub_be.builder.TileTableDto;
 import com.trustrace.tiles_hub_be.dao.TileDao;
@@ -93,5 +94,27 @@ public class TileService {
                 .toList();
         return new PageImpl<>(tileTableDtos, paginated.getPageable(), paginated.getTotalElements());
 
+    }
+
+    public TileDetailDto getTileDetailById(String id) {
+        Tile tile = getTileById(id);
+        if(tile != null) {
+            return TileDetailDto.builder()
+                    .skuCode(tile.getSkuCode())
+                    .tileSize(tile.getTileSize())
+                    .brandName(tile.getBrandName())
+                    .modelName(tile.getModelName())
+                    .color(tile.getColor())
+                    .qty(tile.getQty())
+                    .piecesPerBox(tile.getPiecesPerBox())
+                    .category(tile.getCategory())
+                    .subCategory(tile.getSubCategory())
+                    .finishing(tile.getFinishing())
+                    .minimumStockLevel(tile.getMinimumStockLevel())
+                    .createdAt(tile.getCreatedAt())
+                    .updatedAt(tile.getUpdatedAt())
+                    .build();
+        }
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.trustrace.tiles_hub_be.controllers;
 
+import com.trustrace.tiles_hub_be.builder.TileDetailDto;
 import com.trustrace.tiles_hub_be.builder.TileTableDto;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
@@ -70,6 +71,17 @@ public class TileController {
         return ResponseEntity.ok(ResponseUtil.success("Tiles Fetched", tileTableDtos.getContent(), metadata));
 
     }
+
+    @GetMapping("/tile-detail/{id}")
+    public ResponseEntity<ApiResponse<TileDetailDto>> getTileDetail(@PathVariable String id) {
+        TileDetailDto tile = tileService.getTileDetailById(id);
+        return tile != null ?
+                ResponseEntity.ok(ResponseUtil.success("Tile Fetched", tile, null)) :
+                ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(ResponseUtil.error("Tile Not Found", null));
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Tile>> updateTile(@PathVariable String id, @RequestBody Tile tile) {
