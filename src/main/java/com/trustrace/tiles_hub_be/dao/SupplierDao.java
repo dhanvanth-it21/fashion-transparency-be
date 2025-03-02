@@ -3,6 +3,7 @@ package com.trustrace.tiles_hub_be.dao;
 import com.trustrace.tiles_hub_be.model.collections.Actor.Supplier;
 import com.trustrace.tiles_hub_be.template.SupplierTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +23,9 @@ public class SupplierDao {
         return supplierTemplate.findById(id);
     }
 
-    public List<Supplier> findAll() {
-        return supplierTemplate.findAll();
-    }
+//    public List<Supplier> findAll() {
+//        return supplierTemplate.findAll();
+//    }
 
     public boolean existsById(String id) {
         return supplierTemplate.existsById(id);
@@ -32,5 +33,9 @@ public class SupplierDao {
 
     public void deleteById(String id) {
         supplierTemplate.deleteById(id);
+    }
+
+    public Page<Supplier> getAllSuppliers(int page, int size, String sortBy, String sortDirection, String search) {
+        return supplierTemplate.findAll(page, size, sortBy, sortDirection, search);
     }
 }

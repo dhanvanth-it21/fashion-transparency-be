@@ -1,15 +1,21 @@
 package com.trustrace.tiles_hub_be.controllers;
 
+import com.trustrace.tiles_hub_be.builder.retailshop.RetailShopDto;
+import com.trustrace.tiles_hub_be.builder.retailshop.RetailShopTableDto;
 import com.trustrace.tiles_hub_be.model.collections.Actor.RetailerShop;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ResponseUtil;
 import com.trustrace.tiles_hub_be.service.RetailerShopService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/retailer-shop")
 public class RetailerShopController {
@@ -24,15 +30,37 @@ public class RetailerShopController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<RetailerShop>> getRetailerShopById(@PathVariable String id) {
-        RetailerShop retailerShop = retailerShopService.getRetailerShopById(id);
-        return ResponseEntity.ok(ResponseUtil.success("Retailer shop found", retailerShop, null));
+    public ResponseEntity<ApiResponse<RetailShopDto>> getRetailerShopById(@PathVariable String id) {
+        RetailShopDto retailShopDto = retailerShopService.getRetailerShopById(id);
+        return ResponseEntity.ok(ResponseUtil.success("Retailer shop found", retailShopDto, null));
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<RetailerShop>>> getAllRetailerShops() {
-        List<RetailerShop> shops = retailerShopService.getAllRetailerShops();
-        return ResponseEntity.ok(ResponseUtil.success("All retailer shops retrieved", shops, null));
+//    @GetMapping
+//    public ResponseEntity<ApiResponse<List<RetailerShop>>> getAllRetailerShops() {
+//        List<RetailerShop> shops = retailerShopService.getAllRetailerShops();
+//        return ResponseEntity.ok(ResponseUtil.success("All retailer shops retrieved", shops, null));
+//    }
+
+    @GetMapping("table-details")
+    public ResponseEntity<ApiResponse<List<RetailShopTableDto>>> getAllRetailerShopsTableDetails(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "4") int size,
+            @RequestParam(name = "sortBy", defaultValue = "_id") String sortBy,
+            @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection,
+            @RequestParam(name = "search", defaultValue = "") String search
+    ) {
+        Page<RetailShopTableDto> retailerShopTableDtos = retailerShopService.getAllRetailerShopsTableDetails(page, size, sortBy, sortDirection, search);
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("pageable", retailerShopTableDtos.getPageable());
+        metadata.put("totalElements", retailerShopTableDtos.getTotalElements());
+        metadata.put("totalPages", retailerShopTableDtos.getTotalPages());
+        metadata.put("isFirst", retailerShopTableDtos.isFirst());
+        metadata.put("isLast", retailerShopTableDtos.isLast());
+        metadata.put("size", retailerShopTableDtos.getSize());
+        metadata.put("number", retailerShopTableDtos.getNumber());
+        metadata.put("numberOfElements", retailerShopTableDtos.getNumberOfElements());
+        metadata.put("sort", retailerShopTableDtos.getSort());
+        return ResponseEntity.ok(ResponseUtil.success("Retailer shops fetched", retailerShopTableDtos.getContent(), metadata));
     }
 
     @PutMapping("/{id}")

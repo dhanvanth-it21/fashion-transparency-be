@@ -1,7 +1,7 @@
 package com.trustrace.tiles_hub_be.controllers;
 
-import com.trustrace.tiles_hub_be.builder.TileDetailDto;
-import com.trustrace.tiles_hub_be.builder.TileTableDto;
+import com.trustrace.tiles_hub_be.builder.tile.TileDetailDto;
+import com.trustrace.tiles_hub_be.builder.tile.TileTableDto;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ResponseUtil;

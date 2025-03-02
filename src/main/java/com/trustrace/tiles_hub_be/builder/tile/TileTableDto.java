@@ -1,4 +1,4 @@
-package com.trustrace.tiles_hub_be.builder;
+package com.trustrace.tiles_hub_be.builder.tile;
 
 import com.trustrace.tiles_hub_be.model.collections.tile.TileSize;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,9 @@
 package com.trustrace.tiles_hub_be.template;
 
 import com.trustrace.tiles_hub_be.model.collections.Actor.RetailerShop;
+import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -24,8 +26,27 @@ public class RetailerShopTemplate {
         return Optional.ofNullable(mongoTemplate.findById(id, RetailerShop.class));
     }
 
-    public List<RetailerShop> findAll() {
-        return mongoTemplate.findAll(RetailerShop.class);
+    public Page<RetailerShop> findAll(int page, int size, String sortBy, String sortDirection, String search) {
+        Sort.Direction direction = sortDirection.toUpperCase().equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+        Query query = new Query();
+        if(search == null || search == "") {
+            //nothing to do
+        } else {
+            query.addCriteria(new Criteria().orOperator(
+                    Criteria.where("shopName").regex(search, "i"),
+                    Criteria.where("email").regex(search, "i"),
+                    Criteria.where("phone").regex(search, "i")
+            ));
+        }
+
+        long total = mongoTemplate.count(query, RetailerShop.class);
+
+        query.with(pageable);
+
+         List<RetailerShop> retailerShops = mongoTemplate.find(query, RetailerShop.class);
+        return new PageImpl<>(retailerShops, pageable, total);
     }
 
     public boolean existsById(String id) {

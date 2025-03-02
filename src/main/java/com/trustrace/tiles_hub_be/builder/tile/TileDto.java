@@ -1,4 +1,4 @@
-package com.trustrace.tiles_hub_be.builder;
+package com.trustrace.tiles_hub_be.builder.tile;
 
 import com.trustrace.tiles_hub_be.model.collections.tile.Finishing;
 import com.trustrace.tiles_hub_be.model.collections.tile.TileCategory;
@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.Date;
 
@@ -15,7 +17,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TileDetailDto {
+public class TileDto {
+
     private String skuCode;
     private TileSize tileSize;
     private String brandName;
@@ -27,7 +30,6 @@ public class TileDetailDto {
     private TileSubCategory subCategory;
     private Finishing finishing;
     private int minimumStockLevel;
-    private Date createdAt;
-    private Date updatedAt;
+
 
 }

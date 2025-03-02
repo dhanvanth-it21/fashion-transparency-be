@@ -1,9 +1,9 @@
 package com.trustrace.tiles_hub_be.service;
 
 import com.mongodb.client.result.DeleteResult;
-import com.trustrace.tiles_hub_be.builder.TileDetailDto;
-import com.trustrace.tiles_hub_be.builder.TileDto;
-import com.trustrace.tiles_hub_be.builder.TileTableDto;
+import com.trustrace.tiles_hub_be.builder.tile.TileDetailDto;
+import com.trustrace.tiles_hub_be.builder.tile.TileDto;
+import com.trustrace.tiles_hub_be.builder.tile.TileTableDto;
 import com.trustrace.tiles_hub_be.dao.TileDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TileService {
