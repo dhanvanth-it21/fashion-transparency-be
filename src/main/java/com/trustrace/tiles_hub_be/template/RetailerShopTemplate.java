@@ -56,4 +56,14 @@ public class RetailerShopTemplate {
     public void deleteById(String id) {
         mongoTemplate.remove(new Query(Criteria.where("_id").is(id)), RetailerShop.class);
     }
+
+    public List<RetailerShop> searchRetailerShops(String search) {
+        Query query = new Query();
+        query.addCriteria(new Criteria().orOperator(
+                Criteria.where("shopName").regex(search, "i"),
+                Criteria.where("email").regex(search, "i"),
+                Criteria.where("phone").regex(search, "i")
+        ));
+        return mongoTemplate.find(query, RetailerShop.class);
+    }
 }

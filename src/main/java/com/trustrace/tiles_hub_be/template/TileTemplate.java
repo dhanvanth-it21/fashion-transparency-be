@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be.template;
 
 import com.mongodb.client.result.DeleteResult;
+import com.trustrace.tiles_hub_be.builder.tile.TileQtyDto;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,5 +87,20 @@ public class TileTemplate {
         query.limit(1);
         query.with(Sort.by(Sort.Order.desc("createdAt")));
         return Optional.ofNullable(mongoTemplate.findOne(query, Tile.class));
+    }
+
+    public List<Tile> searchTiles(String search) {
+        Query query = new Query();
+        query.addCriteria(new Criteria().orOperator(
+                Criteria.where("skuCode").regex(search, "i"),
+                Criteria.where("tileSize").regex(search, "i"),
+                Criteria.where("brandName").regex(search, "i"),
+                Criteria.where("modelName").regex(search, "i"),
+                Criteria.where("color").regex(search, "i"),
+                Criteria.where("category").regex(search, "i"),
+                Criteria.where("subCategory").regex(search, "i"),
+                Criteria.where("finishing").regex(search, "i")
+        ));
+        return mongoTemplate.find(query, Tile.class);
     }
 }

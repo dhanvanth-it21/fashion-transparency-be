@@ -3,6 +3,7 @@ package com.trustrace.tiles_hub_be.service;
 import com.mongodb.client.result.DeleteResult;
 import com.trustrace.tiles_hub_be.builder.tile.TileDetailDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileDto;
+import com.trustrace.tiles_hub_be.builder.tile.TileQtyDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileTableDto;
 import com.trustrace.tiles_hub_be.dao.TileDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
@@ -138,5 +139,18 @@ public class TileService {
                 .finishing(tile.getFinishing())
                 .minimumStockLevel(tile.getMinimumStockLevel())
                 .build();
+    }
+
+    public List<TileQtyDto> searchTiles(String search) {
+        List<Tile> tiles =  tileDao.searchTiles(search);
+        return tiles.stream()
+                .map(tile -> {
+                    return TileQtyDto.builder()
+                            ._id(tile.get_id())
+                            .skuCode(tile.getSkuCode())
+                            .qty(tile.getQty())
+                            .build();
+                })
+                .toList();
     }
 }

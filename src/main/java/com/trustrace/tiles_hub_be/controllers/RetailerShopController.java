@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be.controllers;
 
 import com.trustrace.tiles_hub_be.builder.retailshop.RetailShopDto;
+import com.trustrace.tiles_hub_be.builder.retailshop.RetailShopNameDto;
 import com.trustrace.tiles_hub_be.builder.retailshop.RetailShopTableDto;
 import com.trustrace.tiles_hub_be.model.collections.Actor.RetailerShop;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
@@ -40,6 +41,14 @@ public class RetailerShopController {
 //        List<RetailerShop> shops = retailerShopService.getAllRetailerShops();
 //        return ResponseEntity.ok(ResponseUtil.success("All retailer shops retrieved", shops, null));
 //    }
+
+    @GetMapping("search")
+    public ResponseEntity<ApiResponse<List<RetailShopNameDto>>> searchRetailerShops(
+            @RequestParam(name = "search", defaultValue = "") String search
+    ) {
+        List<RetailShopNameDto> retailShopNameDto = retailerShopService.searchRetailerShops(search);
+        return ResponseEntity.ok(ResponseUtil.success("Retailer shops fetched", retailShopNameDto, null));
+    }
 
     @GetMapping("table-details")
     public ResponseEntity<ApiResponse<List<RetailShopTableDto>>> getAllRetailerShopsTableDetails(

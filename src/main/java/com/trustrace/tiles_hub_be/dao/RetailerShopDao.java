@@ -38,4 +38,8 @@ public class RetailerShopDao {
     public Page<RetailerShop> getAllRetailShops(int page, int size, String sortBy, String sortDirection, String search) {
         return retailerShopTemplate.findAll(page, size, sortBy, sortDirection, search);
     }
+
+    public List<RetailerShop> searchRetailerShops(String search) {
+        return retailerShopTemplate.searchRetailerShops(search);
+    }
 }

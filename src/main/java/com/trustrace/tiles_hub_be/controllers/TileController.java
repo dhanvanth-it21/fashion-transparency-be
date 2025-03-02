@@ -1,6 +1,8 @@
 package com.trustrace.tiles_hub_be.controllers;
 
+import com.trustrace.tiles_hub_be.builder.retailshop.RetailShopNameDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileDetailDto;
+import com.trustrace.tiles_hub_be.builder.tile.TileQtyDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileTableDto;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
@@ -81,6 +83,14 @@ public class TileController {
                 ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
                         .body(ResponseUtil.error("Tile Not Found", null));
+    }
+
+    @GetMapping("search")
+    public ResponseEntity<ApiResponse<List<TileQtyDto>>> searchTiles(
+            @RequestParam(name = "search", defaultValue = "") String search
+    ) {
+        List<TileQtyDto> tileQtyDtos = tileService.searchTiles(search);
+        return ResponseEntity.ok(ResponseUtil.success("Tiles fetched", tileQtyDtos, null));
     }
 
 

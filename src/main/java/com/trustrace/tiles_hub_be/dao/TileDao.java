@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be.dao;
 
 import com.mongodb.client.result.DeleteResult;
+import com.trustrace.tiles_hub_be.builder.tile.TileQtyDto;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.template.TileTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,9 @@ public class TileDao {
 
     public Optional<Tile> getLastCreatedTile() {
         return tileTemplate.findLastCreatedTile();
+    }
+
+    public List<Tile> searchTiles(String search) {
+        return tileTemplate.searchTiles(search);
     }
 }

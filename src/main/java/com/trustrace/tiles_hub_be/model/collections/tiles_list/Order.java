@@ -26,11 +26,14 @@ public class Order {
 
     private String retailerShopId; // referencing the retail shop, the order placed at warehouse
 
-    private OrderStatus status; // ENDING, PICKING, DISPATCHED, DELIVERED
+    private String shopName; // shop name of the retailer shop
+
+    private OrderStatus status; // PENDING, PICKING, DISPATCHED, DELIVERED
 
     private List<OrderItem> itemList;
 
     private double damagePercentage; //acceptable damage occured during this order delivery
+
 
     @CreatedDate
     private Date createdAt;
