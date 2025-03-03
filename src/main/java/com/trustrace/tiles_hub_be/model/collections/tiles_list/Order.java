@@ -3,6 +3,7 @@ package com.trustrace.tiles_hub_be.model.collections.tiles_list;
 
 import com.trustrace.tiles_hub_be.model.collections.Actor.RetailerShop;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,6 +18,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Document(collection = "orders")
 public class Order {
     @Id
@@ -24,7 +26,7 @@ public class Order {
 
     private String salesId; // it is just a id of sales (not included in this project)
 
-    private String retailerShopId; // referencing the retail shop, the order placed at warehouse
+    private String shopId; // referencing the retail shop, the order placed at warehouse
 
     private String shopName; // shop name of the retailer shop
 

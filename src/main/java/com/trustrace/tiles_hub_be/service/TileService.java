@@ -9,6 +9,7 @@ import com.trustrace.tiles_hub_be.dao.TileDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.model.collections.tile.TileCategory;
+import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -153,4 +154,14 @@ public class TileService {
                 })
                 .toList();
     }
+
+    public void updateStockByOrderItems(List<OrderItem> orderItems) {
+
+        orderItems.forEach(orderItem -> {
+            tileDao.updateStockByOrderItem(orderItem.getTileId(), orderItem.getRequiredQty());
+        });
+
+    }
+
+
 }

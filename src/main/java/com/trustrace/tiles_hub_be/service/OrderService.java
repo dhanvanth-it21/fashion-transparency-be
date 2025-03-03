@@ -1,8 +1,11 @@
 package com.trustrace.tiles_hub_be.service;
 
+import com.trustrace.tiles_hub_be.builder.orders.NewOrderDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderTableDto;
 import com.trustrace.tiles_hub_be.builder.suppier.SupplierTableDto;
 import com.trustrace.tiles_hub_be.dao.OrderDao;
+import com.trustrace.tiles_hub_be.dao.RetailerShopDao;
+import com.trustrace.tiles_hub_be.dao.TileDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.Actor.Supplier;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
@@ -20,9 +23,24 @@ public class OrderService {
     @Autowired
     private OrderDao orderDao;
 
-    public Order createOrder(Order order) {
-        order.setStatus(OrderStatus.PENDING);
-        return orderDao.save(order);
+    @Autowired
+    private RetailerShopDao retailerShopDao;
+
+    @Autowired
+    private TileService tileService;
+
+    public Order createOrder(NewOrderDto newOrderDto) {
+       Order order = Order.builder()
+               .shopId(newOrderDto.getShopId())
+               .salesId(newOrderDto.getSalesId())
+               .damagePercentage(newOrderDto.getDamagePercentage())
+               .itemList(newOrderDto.getItemList())
+               .status(OrderStatus.PENDING)
+               .shopName(retailerShopDao.getShopNameByid(newOrderDto.getShopId()))
+               .build();
+
+        tileService.updateStockByOrderItems(order.getItemList());
+       return orderDao.save(order);
     }
 
     public Order getOrderById(String id) {

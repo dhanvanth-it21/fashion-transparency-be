@@ -101,6 +101,13 @@ public class TileTemplate {
                 Criteria.where("subCategory").regex(search, "i"),
                 Criteria.where("finishing").regex(search, "i")
         ));
+        query.limit(10);
         return mongoTemplate.find(query, Tile.class);
+    }
+
+    public void updateStockByOrderItem(String tileId, int requiredQty) {
+       Tile tile =  mongoTemplate.findById(tileId, Tile.class);
+       tile.setQty(tile.getQty() - requiredQty);
+       save(tile);
     }
 }

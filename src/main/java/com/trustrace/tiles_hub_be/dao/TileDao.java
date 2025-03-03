@@ -48,4 +48,8 @@ public class TileDao {
     public List<Tile> searchTiles(String search) {
         return tileTemplate.searchTiles(search);
     }
+
+    public void updateStockByOrderItem(String tileId, int requiredQty) {
+        tileTemplate.updateStockByOrderItem(tileId, requiredQty);
+    }
 }

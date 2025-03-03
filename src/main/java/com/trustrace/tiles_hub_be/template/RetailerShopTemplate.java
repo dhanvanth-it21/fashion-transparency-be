@@ -66,4 +66,11 @@ public class RetailerShopTemplate {
         ));
         return mongoTemplate.find(query, RetailerShop.class);
     }
+
+    public String getNameById(String shopId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("_id").is(shopId));
+        RetailerShop retailerShop = mongoTemplate.findOne(query, RetailerShop.class);
+        return retailerShop.getShopName();
+    }
 }

@@ -1,5 +1,6 @@
 package com.trustrace.tiles_hub_be.controllers;
 
+import com.trustrace.tiles_hub_be.builder.orders.NewOrderDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderTableDto;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderStatus;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
@@ -23,10 +25,11 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Order>> createOrder(@RequestBody Order order) {
-        Order createdOrder = orderService.createOrder(order);
+    public ResponseEntity<ApiResponse<Order>> createOrder(@RequestBody NewOrderDto newOrderDto) {
+        Order createdOrder = orderService.createOrder(newOrderDto);
         return ResponseEntity.ok(ResponseUtil.success("Order created successfully", createdOrder, null));
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Order>> getOrderById(@PathVariable String id) {
@@ -49,7 +52,7 @@ public class OrderController {
 
 
     @GetMapping("table-details")
-    public ResponseEntity<ApiResponse<List<OrderTableDto>>> getAllSupplierTableDetails(
+    public ResponseEntity<ApiResponse<List<OrderTableDto>>> getAllOrderTableDetails(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "4") int size,
             @RequestParam(name = "sortBy", defaultValue = "_id") String sortBy,
@@ -67,6 +70,6 @@ public class OrderController {
         metadata.put("number", orderTableDtos.getNumber());
         metadata.put("numberOfElements", orderTableDtos.getNumberOfElements());
         metadata.put("sort", orderTableDtos.getSort());
-        return ResponseEntity.ok(ResponseUtil.success("Retailer shops fetched", orderTableDtos.getContent(), metadata));
+        return ResponseEntity.ok(ResponseUtil.success("Order fetched", orderTableDtos.getContent(), metadata));
     }
 }

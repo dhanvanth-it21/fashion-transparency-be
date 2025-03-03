@@ -60,7 +60,7 @@ public class SupplierController {
         metadata.put("number", supplierTableDtos.getNumber());
         metadata.put("numberOfElements", supplierTableDtos.getNumberOfElements());
         metadata.put("sort", supplierTableDtos.getSort());
-        return ResponseEntity.ok(ResponseUtil.success("Retailer shops fetched", supplierTableDtos.getContent(), metadata));
+        return ResponseEntity.ok(ResponseUtil.success("Suppliers fetched", supplierTableDtos.getContent(), metadata));
     }
 
     @PutMapping("/{id}")

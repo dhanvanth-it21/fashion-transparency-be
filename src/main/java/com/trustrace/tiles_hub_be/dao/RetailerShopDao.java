@@ -42,4 +42,8 @@ public class RetailerShopDao {
     public List<RetailerShop> searchRetailerShops(String search) {
         return retailerShopTemplate.searchRetailerShops(search);
     }
+
+    public String getShopNameByid(String shopId) {
+        return retailerShopTemplate.getNameById(shopId);
+    }
 }
