@@ -37,7 +37,7 @@ public class OrderController {
         return ResponseEntity.ok(ResponseUtil.success("Order found", order, null));
     }
 
-    @PutMapping("/{id}/status")
+    @PutMapping("/status/{id}")
     public ResponseEntity<ApiResponse<Order>> updateOrderStatus(@PathVariable String id, @RequestParam OrderStatus status) {
         Order updatedOrder = orderService.updateOrderStatus(id, status);
         return ResponseEntity.ok(ResponseUtil.success("Order status updated", updatedOrder, null));

@@ -3,6 +3,7 @@ package com.trustrace.tiles_hub_be.model.collections.tiles_list;
 import com.trustrace.tiles_hub_be.model.collections.Actor.Supplier;
 import com.trustrace.tiles_hub_be.model.user.UserEntity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,6 +17,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Document(collection = "purchases")
 public class Purchase {
 
@@ -33,6 +35,8 @@ public class Purchase {
     private String recordedByUserId; //referencing the user who is recordered the list in the system
 
     private String approvedByUserId; // referencing the user who approved it
+
+    private PurchaseStatus status; // status of the purchase
 
     @CreatedDate
     private Date createdAt;

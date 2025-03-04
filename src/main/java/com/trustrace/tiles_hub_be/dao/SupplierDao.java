@@ -38,4 +38,8 @@ public class SupplierDao {
     public Page<Supplier> getAllSuppliers(int page, int size, String sortBy, String sortDirection, String search) {
         return supplierTemplate.findAll(page, size, sortBy, sortDirection, search);
     }
+
+    public List<Supplier> searchSuppliers(String search) {
+        return supplierTemplate.searchSuppliers(search);
+    }
 }

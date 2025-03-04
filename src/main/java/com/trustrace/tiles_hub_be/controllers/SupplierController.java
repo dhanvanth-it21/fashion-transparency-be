@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be.controllers;
 
 import com.trustrace.tiles_hub_be.builder.retailshop.RetailShopTableDto;
+import com.trustrace.tiles_hub_be.builder.suppier.SupplierNameDto;
 import com.trustrace.tiles_hub_be.builder.suppier.SupplierTableDto;
 import com.trustrace.tiles_hub_be.model.collections.Actor.Supplier;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
@@ -74,4 +75,13 @@ public class SupplierController {
         supplierService.deleteSupplier(id);
         return ResponseEntity.ok(ResponseUtil.success("Supplier deleted successfully", null, null));
     }
+
+    @GetMapping("search")
+    public ResponseEntity<ApiResponse<List<SupplierNameDto>>> searchSuppliers(
+            @RequestParam(name = "search", defaultValue = "") String search
+    ) {
+        List<SupplierNameDto> supplierNameDtos = supplierService.searchSuppliers(search);
+        return ResponseEntity.ok(ResponseUtil.success("Suppliers Name fetched", supplierNameDtos, null));
+    }
+
 }

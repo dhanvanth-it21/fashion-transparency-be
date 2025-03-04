@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be.service;
 
 import com.trustrace.tiles_hub_be.builder.retailshop.RetailShopTableDto;
+import com.trustrace.tiles_hub_be.builder.suppier.SupplierNameDto;
 import com.trustrace.tiles_hub_be.builder.suppier.SupplierTableDto;
 import com.trustrace.tiles_hub_be.dao.SupplierDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
@@ -61,5 +62,15 @@ public class SupplierService {
                 .toList();
 
         return new PageImpl<>(supplierTableDtos, paginated.getPageable(), paginated.getTotalElements());
+    }
+
+    public List<SupplierNameDto> searchSuppliers(String search) {
+        List<Supplier> suppliers = supplierDao.searchSuppliers(search);
+        return suppliers.stream()
+                .map(supplier -> SupplierNameDto.builder()
+                        ._id(supplier.get_id())
+                        .brandName(supplier.getBrandName())
+                        .build())
+                .toList();
     }
 }
