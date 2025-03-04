@@ -53,7 +53,7 @@ public class PurchaseService {
         purchaseDao.deleteById(id);
     }
 
-    public Page<PurchaseTableDto> getAllOrdersTableDetails(int page, int size, String sortBy, String sortDirection, String search) {
+    public Page<PurchaseTableDto> getAllPurchasesTableDetails(int page, int size, String sortBy, String sortDirection, String search) {
         Page<Purchase> paginated = purchaseDao.getAllPurchases(page, size, sortBy, sortDirection, search);
         List<Purchase> purchases = paginated.getContent();
         List<PurchaseTableDto> purchaseTableDtos = purchases.stream()
@@ -65,7 +65,6 @@ public class PurchaseService {
                         .status(purchase.getStatus())
                         .build())
                 .toList();
-
         return new PageImpl<>(purchaseTableDtos, paginated.getPageable(), paginated.getTotalElements());
     }
 

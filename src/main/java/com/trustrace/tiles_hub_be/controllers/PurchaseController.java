@@ -50,7 +50,7 @@ public class PurchaseController {
             @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection,
             @RequestParam(name = "search", defaultValue = "") String search
     ) {
-        Page<PurchaseTableDto> purchaseTableDtos = purchaseService.getAllOrdersTableDetails(page, size, sortBy, sortDirection, search);
+        Page<PurchaseTableDto> purchaseTableDtos = purchaseService.getAllPurchasesTableDetails(page, size, sortBy, sortDirection, search);
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("pageable", purchaseTableDtos.getPageable());
         metadata.put("totalElements", purchaseTableDtos.getTotalElements());

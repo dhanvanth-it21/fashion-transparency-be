@@ -42,18 +42,17 @@ public class PurchaseTemplate {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
         Query query = new Query();
-        if(search == null || search == "") {
+        if(search == null || search.equals("")) {
             //nothing to do
         } else {
             query.addCriteria(new Criteria().orOperator(
-                    Criteria.where("brandName").regex(search, "i"),
-                    Criteria.where("email").regex(search, "i")
+                    Criteria.where("status").regex(search, "i")
             ));
         }
 
         long total = mongoTemplate.count(query, Purchase.class);
-
         query.with(pageable);
+
 
         List<Purchase> purchases = mongoTemplate.find(query, Purchase.class);
         return new PageImpl<>(purchases, pageable, total);

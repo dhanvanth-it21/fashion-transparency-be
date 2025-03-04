@@ -41,7 +41,7 @@ public class OrderTemplate {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
         Query query = new Query();
-        if(search == null || search == "") {
+        if(search == null || search.equals("")) {
             //nothing to do
         } else {
             query.addCriteria(new Criteria().orOperator(

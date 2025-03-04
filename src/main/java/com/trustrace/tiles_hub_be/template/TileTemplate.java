@@ -38,7 +38,7 @@ public class TileTemplate {
 
         Query query = new Query();
         query.addCriteria(Criteria.where("archived").is(false));
-        if(search == null || search == "") {
+        if(search == null || search.equals("")) {
             //nothing to do
         } else {
             query.addCriteria(new Criteria().orOperator(
