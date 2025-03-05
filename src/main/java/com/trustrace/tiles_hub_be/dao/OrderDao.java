@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be.dao;
 
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
+import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderStatus;
 import com.trustrace.tiles_hub_be.template.OrderTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,7 @@ public class OrderDao {
         orderTemplate.deleteById(id);
     }
 
-    public Page<Order> getAllOrders(int page, int size, String sortBy, String sortDirection, String search) {
-        return orderTemplate.findAll(page, size, sortBy, sortDirection, search);
+    public Page<Order> getAllOrders(int page, int size, String sortBy, String sortDirection, String search, OrderStatus orderStatus) {
+        return orderTemplate.findAll(page, size, sortBy, sortDirection, search, orderStatus);
     }
 }

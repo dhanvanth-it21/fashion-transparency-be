@@ -58,6 +58,7 @@ public class TileController {
             @RequestParam(name = "sortBy", defaultValue = "_id") String sortBy,
             @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection,
             @RequestParam(name = "search", defaultValue = "") String search
+
     ) {
         Page<TileTableDto> tileTableDtos = tileService.getAllTilesTableDetails(page, size, sortBy, sortDirection, search);
         Map<String, Object> metadata = new HashMap<>();

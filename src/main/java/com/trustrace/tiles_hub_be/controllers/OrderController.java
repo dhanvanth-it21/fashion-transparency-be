@@ -57,9 +57,10 @@ public class OrderController {
             @RequestParam(name = "size", defaultValue = "4") int size,
             @RequestParam(name = "sortBy", defaultValue = "_id") String sortBy,
             @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection,
-            @RequestParam(name = "search", defaultValue = "") String search
-    ) {
-        Page<OrderTableDto> orderTableDtos = orderService.getAllOrdersTableDetails(page, size, sortBy, sortDirection, search);
+            @RequestParam(name = "search", defaultValue = "") String search,
+            @RequestParam(name = "filterBy", defaultValue = "") OrderStatus orderStatus
+            ) {
+        Page<OrderTableDto> orderTableDtos = orderService.getAllOrdersTableDetails(page, size, sortBy, sortDirection, search, orderStatus);
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("pageable", orderTableDtos.getPageable());
         metadata.put("totalElements", orderTableDtos.getTotalElements());

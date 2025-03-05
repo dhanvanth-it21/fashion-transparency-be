@@ -61,8 +61,8 @@ public class OrderService {
         orderDao.deleteById(id);
     }
 
-    public Page<OrderTableDto> getAllOrdersTableDetails(int page, int size, String sortBy, String sortDirection, String search) {
-        Page<Order> paginated = orderDao.getAllOrders(page, size, sortBy, sortDirection, search);
+    public Page<OrderTableDto> getAllOrdersTableDetails(int page, int size, String sortBy, String sortDirection, String search, OrderStatus orderStatus) {
+        Page<Order> paginated = orderDao.getAllOrders(page, size, sortBy, sortDirection, search, orderStatus);
         List<Order> orders = paginated.getContent();
         List<OrderTableDto> orderTableDtos = orders.stream()
                 .map(order -> OrderTableDto.builder()

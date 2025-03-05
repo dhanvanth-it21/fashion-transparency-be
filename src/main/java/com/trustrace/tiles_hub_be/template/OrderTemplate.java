@@ -2,6 +2,7 @@ package com.trustrace.tiles_hub_be.template;
 
 import com.trustrace.tiles_hub_be.model.collections.Actor.Supplier;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
+import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -36,7 +37,7 @@ public class OrderTemplate {
 
 
 
-    public Page<Order> findAll(int page, int size, String sortBy, String sortDirection, String search) {
+    public Page<Order> findAll(int page, int size, String sortBy, String sortDirection, String search, OrderStatus orderStatus) {
         Sort.Direction direction = sortDirection.toUpperCase().equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
@@ -50,6 +51,9 @@ public class OrderTemplate {
             ));
         }
 
+        if(orderStatus != null && (orderStatus == OrderStatus.PENDING || orderStatus == OrderStatus.DISPATCHED)) {
+            query.addCriteria(Criteria.where("status").is(orderStatus));
+        }
         long total = mongoTemplate.count(query, Order.class);
 
         query.with(pageable);
