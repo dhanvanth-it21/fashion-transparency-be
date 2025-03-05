@@ -4,6 +4,7 @@ package com.trustrace.tiles_hub_be.model.collections.damage;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.model.user.UserEntity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,6 +18,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Document(collection = "damageReports")
 public class DamageReport {
 
@@ -25,6 +27,7 @@ public class DamageReport {
 
     private String tileId; //referencing the particular tile
 
+
     private DamageLocation damageLocation; // FROM_MANUFACTURER, AT_WAREHOUSE, TO_RETAIL_SHOP
 
     private int qty; //number of boxes
@@ -32,6 +35,12 @@ public class DamageReport {
     private String remark; // remark about the damage
 
     private DamageStatus status; // UNDER_REVIEW, APPROVED, REJECTED
+
+    private String retailerId; // nuul when damage not reported by retailer
+
+    private boolean creditNoteIssued;
+
+
 
     private String reportedByUserId; // referencing the user reported the damage
 

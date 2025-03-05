@@ -52,4 +52,16 @@ public class TileDao {
     public void updateStockByOrderItem(String tileId, int requiredQty) {
         tileTemplate.updateStockByOrderItem(tileId, requiredQty);
     }
+
+    public Tile findById(String tileId) {
+        return tileTemplate.findById(tileId);
+    }
+
+    public void save(Tile tile) {
+        tileTemplate.save(tile);
+    }
+
+    public Tile findBySkuCode(String tileSku) {
+        return tileTemplate.findBySkuCode(tileSku);
+    }
 }

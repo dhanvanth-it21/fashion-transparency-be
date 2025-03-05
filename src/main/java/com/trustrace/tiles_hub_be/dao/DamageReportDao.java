@@ -1,8 +1,10 @@
 package com.trustrace.tiles_hub_be.dao;
 
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageReport;
+import com.trustrace.tiles_hub_be.model.collections.damage.DamageStatus;
 import com.trustrace.tiles_hub_be.template.DamageReportTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,5 +34,13 @@ public class DamageReportDao {
 
     public void deleteById(String id) {
         damageReportTemplate.deleteById(id);
+    }
+
+    public List<DamageReport> findByStatus(DamageStatus underReview) {
+        return damageReportTemplate.findByStatus(underReview);
+    }
+
+    public Page<DamageReport> getAllDamageReports(int page, int size, String sortBy, String sortDirection, String search) {
+        return damageReportTemplate.getAllDamageReports(page, size, sortBy, sortDirection, search);
     }
 }

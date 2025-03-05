@@ -110,4 +110,10 @@ public class TileTemplate {
        tile.setQty(tile.getQty() - requiredQty);
        save(tile);
     }
+
+    public Tile findBySkuCode(String tileSku) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("skuCode").is(tileSku));
+        return mongoTemplate.findOne(query, Tile.class);
+    }
 }

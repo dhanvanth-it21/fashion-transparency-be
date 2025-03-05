@@ -83,4 +83,6 @@ public class RetailerShopController {
         retailerShopService.deleteRetailerShop(id);
         return ResponseEntity.ok(ResponseUtil.success("Retailer shop deleted successfully", null, null));
     }
+
+
 }
