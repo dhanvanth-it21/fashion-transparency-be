@@ -1,5 +1,6 @@
 package com.trustrace.tiles_hub_be.builder.damages;
 
+
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageLocation;
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageStatus;
 import lombok.AllArgsConstructor;
@@ -11,11 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DamageReportDto {
+public class UpdateDamageStatus {
     private String _id;
     private String skuCode;
-    private String reportedByUserId;
-    private DamageLocation damageLocation;
     private int qty;
     private DamageStatus status;
 }

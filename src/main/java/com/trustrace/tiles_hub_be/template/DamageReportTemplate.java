@@ -43,18 +43,23 @@ public class DamageReportTemplate {
         return mongoTemplate.find(new Query(Criteria.where("status").is(underReview)), DamageReport.class);
     }
 
-    public Page<DamageReport> getAllDamageReports(int page, int size, String sortBy, String sortDirection, String search) {
+    public Page<DamageReport> getAllDamageReports(int page, int size, String sortBy, String sortDirection, String search, DamageStatus filterBy) {
         Sort.Direction direction = sortDirection.toUpperCase().equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
         Query query = new Query();
         if(search == null || search.equals("")) {
             //nothing to do
-        } else {
+        }
+        else {
             query.addCriteria(new Criteria().orOperator(
                     Criteria.where("damageLocation").regex(search, "i"),
                     Criteria.where("status").regex(search, "i")
             ));
+        }
+
+        if(filterBy != null) {
+            query.addCriteria(Criteria.where("status").is(filterBy));
         }
 
         long total = mongoTemplate.count(query, DamageReport.class);

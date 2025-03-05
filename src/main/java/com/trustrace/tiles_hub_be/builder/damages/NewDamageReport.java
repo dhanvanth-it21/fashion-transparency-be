@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class NewDamageReport {
-    private String tileSku;
+    private String skuCode;
     private String retailerId;
     private DamageLocation damageLocation;
     private int qty;

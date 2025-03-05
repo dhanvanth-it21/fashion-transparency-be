@@ -40,7 +40,7 @@ public class DamageReportDao {
         return damageReportTemplate.findByStatus(underReview);
     }
 
-    public Page<DamageReport> getAllDamageReports(int page, int size, String sortBy, String sortDirection, String search) {
-        return damageReportTemplate.getAllDamageReports(page, size, sortBy, sortDirection, search);
+    public Page<DamageReport> getAllDamageReports(int page, int size, String sortBy, String sortDirection, String search, DamageStatus filterBy) {
+        return damageReportTemplate.getAllDamageReports(page, size, sortBy, sortDirection, search, filterBy);
     }
 }

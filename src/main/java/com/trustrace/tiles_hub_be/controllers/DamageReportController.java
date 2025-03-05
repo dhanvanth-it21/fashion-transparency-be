@@ -2,7 +2,9 @@ package com.trustrace.tiles_hub_be.controllers;
 
 import com.trustrace.tiles_hub_be.builder.damages.DamageReportDto;
 import com.trustrace.tiles_hub_be.builder.damages.NewDamageReport;
+import com.trustrace.tiles_hub_be.builder.damages.UpdateDamageStatus;
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageReport;
+import com.trustrace.tiles_hub_be.model.collections.damage.DamageStatus;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ResponseUtil;
 import com.trustrace.tiles_hub_be.service.DamageReportService;
@@ -64,15 +66,21 @@ public class DamageReportController {
     }
 
     @PutMapping("/approve/{id}")
-    public ResponseEntity<ApiResponse<String>> approveReport(@PathVariable String id, @RequestParam String approvedByUserId) {
-        damageReportService.approveReport(id, approvedByUserId);
+    public ResponseEntity<ApiResponse<String>> approveReport(@PathVariable String id) {
+        damageReportService.approveReport(id);
         return ResponseEntity.ok(ResponseUtil.success("Damage report approved successfully", "Damage report approved successfully", null));
     }
 
     @PutMapping("/reject/{id}")
-    public ResponseEntity<ApiResponse<String>> rejectReport(@PathVariable String id, @RequestParam String reason) {
-        damageReportService.rejectReport(id, reason);
+    public ResponseEntity<ApiResponse<String>> rejectReport(@PathVariable String id) {
+        damageReportService.rejectReport(id);
         return ResponseEntity.ok(ResponseUtil.success("Damage report rejected successfully", "Damage report rejected successfully", null));
+    }
+
+    @GetMapping("/get-status/{id}")
+    public ResponseEntity<ApiResponse<UpdateDamageStatus>> getStatusById(@PathVariable String id) {
+        UpdateDamageStatus updateDamageStatus = damageReportService.getStatusById(id);
+        return ResponseEntity.ok(ResponseUtil.success("Fetched Damage stats successfully", updateDamageStatus, null));
     }
 
     @GetMapping("/table-details")
@@ -81,9 +89,10 @@ public class DamageReportController {
             @RequestParam(name = "size", defaultValue = "8") int size,
             @RequestParam(name = "sortBy", defaultValue = "_id") String sortBy,
             @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection,
-            @RequestParam(name = "search", defaultValue = "") String search
+            @RequestParam(name = "search", defaultValue = "") String search,
+            @RequestParam(name = "filterBy", defaultValue = "") DamageStatus filterBy
     ) {
-        Page<DamageReportDto> damageReportDtos = damageReportService.getAllDamageReportsTableDetails(page, size, sortBy, sortDirection, search);
+        Page<DamageReportDto> damageReportDtos = damageReportService.getAllDamageReportsTableDetails(page, size, sortBy, sortDirection, search, filterBy);
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("pageable", damageReportDtos.getPageable());
         metadata.put("totalElements", damageReportDtos.getTotalElements());
