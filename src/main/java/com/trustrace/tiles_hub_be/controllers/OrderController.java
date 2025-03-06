@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be.controllers;
 
 import com.trustrace.tiles_hub_be.builder.orders.NewOrderDto;
+import com.trustrace.tiles_hub_be.builder.orders.OrderDamageDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderTableDto;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderStatus;
@@ -72,5 +73,13 @@ public class OrderController {
         metadata.put("numberOfElements", orderTableDtos.getNumberOfElements());
         metadata.put("sort", orderTableDtos.getSort());
         return ResponseEntity.ok(ResponseUtil.success("Order fetched", orderTableDtos.getContent(), metadata));
+    }
+
+    @GetMapping("search")
+    public ResponseEntity<ApiResponse<List<OrderDamageDto>>> searchOrders(
+            @RequestParam(name = "search", defaultValue = "") String search
+    ) {
+        List<OrderDamageDto> orderDamageDtos = orderService.searchOrders(search);
+        return ResponseEntity.ok(ResponseUtil.success("Orders fetched", orderDamageDtos, null));
     }
 }

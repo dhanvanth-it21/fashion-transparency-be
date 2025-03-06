@@ -69,4 +69,8 @@ public class DamageReportTemplate {
         List<DamageReport> damageReports = mongoTemplate.find(query, DamageReport.class);
         return new PageImpl<>(damageReports, pageable, total);
     }
+
+    public List<DamageReport> findByOrderId(String orderId) {
+        return mongoTemplate.find(new Query(Criteria.where("orderId").is(orderId)), DamageReport.class);
+    }
 }

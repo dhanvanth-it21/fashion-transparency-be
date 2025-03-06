@@ -49,9 +49,7 @@ public class TileDao {
         return tileTemplate.searchTiles(search);
     }
 
-    public void updateStockByOrderItem(String tileId, int requiredQty) {
-        tileTemplate.updateStockByOrderItem(tileId, requiredQty);
-    }
+
 
     public Tile findById(String tileId) {
         return tileTemplate.findById(tileId);

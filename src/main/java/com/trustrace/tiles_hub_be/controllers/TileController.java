@@ -4,6 +4,7 @@ import com.trustrace.tiles_hub_be.builder.retailshop.RetailShopNameDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileDetailDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileQtyDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileTableDto;
+import com.trustrace.tiles_hub_be.model.collections.damage.DamageLocation;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ResponseUtil;
@@ -88,9 +89,11 @@ public class TileController {
 
     @GetMapping("search")
     public ResponseEntity<ApiResponse<List<TileQtyDto>>> searchTiles(
-            @RequestParam(name = "search", defaultValue = "") String search
-    ) {
-        List<TileQtyDto> tileQtyDtos = tileService.searchTiles(search);
+            @RequestParam(name = "search", defaultValue = "") String search,
+            @RequestParam(name = "location", defaultValue = "")DamageLocation location,
+            @RequestParam(name = "givenId", defaultValue = "") String givenId
+            ) {
+        List<TileQtyDto> tileQtyDtos = tileService.searchTiles(search, location, givenId);
         return ResponseEntity.ok(ResponseUtil.success("Tiles fetched", tileQtyDtos, null));
     }
 

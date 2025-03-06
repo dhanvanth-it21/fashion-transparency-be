@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UpdateDamageStatus {
     private String _id;
+
+    private String damageReportId;
     private String skuCode;
     private int qty;
     private DamageStatus status;

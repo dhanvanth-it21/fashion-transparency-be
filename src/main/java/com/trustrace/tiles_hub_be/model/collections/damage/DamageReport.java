@@ -25,6 +25,8 @@ public class DamageReport {
     @Id
     private String _id;
 
+    private String damageReportId;
+
     private String tileId; //referencing the particular tile
 
 
@@ -36,7 +38,9 @@ public class DamageReport {
 
     private DamageStatus status; // UNDER_REVIEW, APPROVED, REJECTED
 
-    private String retailerId; // nuul when damage not reported by retailer
+    private String orderId; // nuul when damage not reported by retailer
+
+    private String purchaseId; // null when damage not reported by retailer
 
     private boolean creditNoteIssued;
 

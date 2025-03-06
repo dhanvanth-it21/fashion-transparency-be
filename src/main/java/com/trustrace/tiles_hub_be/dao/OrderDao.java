@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,5 +34,13 @@ public class OrderDao {
 
     public Page<Order> getAllOrders(int page, int size, String sortBy, String sortDirection, String search, OrderStatus orderStatus) {
         return orderTemplate.findAll(page, size, sortBy, sortDirection, search, orderStatus);
+    }
+
+    public List<Order> searchOrders(String search) {
+        return orderTemplate.searchOrders(search);
+    }
+
+    public Optional<Order> findByOrderId(String givenId) {
+        return orderTemplate.findByOrderId(givenId);
     }
 }

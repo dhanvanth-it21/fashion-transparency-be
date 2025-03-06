@@ -16,6 +16,9 @@ public class UpdatePurchaseDto {
 
     private String _id;
 
+
+    private String purchaseId;
+
     private String brandName;
 
     private PurchaseStatus status;

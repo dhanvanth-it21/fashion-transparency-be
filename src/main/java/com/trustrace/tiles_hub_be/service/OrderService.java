@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be.service;
 
 import com.trustrace.tiles_hub_be.builder.orders.NewOrderDto;
+import com.trustrace.tiles_hub_be.builder.orders.OrderDamageDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderTableDto;
 import com.trustrace.tiles_hub_be.builder.suppier.SupplierTableDto;
 import com.trustrace.tiles_hub_be.dao.OrderDao;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -30,7 +33,9 @@ public class OrderService {
     private TileService tileService;
 
     public Order createOrder(NewOrderDto newOrderDto) {
+        String orderId = generateOrderId();
        Order order = Order.builder()
+                .orderId(orderId)
                .shopId(newOrderDto.getShopId())
                .salesId(newOrderDto.getSalesId())
                .damagePercentage(newOrderDto.getDamagePercentage())
@@ -39,8 +44,9 @@ public class OrderService {
                .shopName(retailerShopDao.getShopNameByid(newOrderDto.getShopId()))
                .build();
 
+        Order savedOrder = orderDao.save(order);
         tileService.updateStockByOrderItems(order.getItemList());
-       return orderDao.save(order);
+        return savedOrder;
     }
 
     public Order getOrderById(String id) {
@@ -67,6 +73,7 @@ public class OrderService {
         List<OrderTableDto> orderTableDtos = orders.stream()
                 .map(order -> OrderTableDto.builder()
                         ._id(order.get_id())
+                        .orderId(order.getOrderId())
                         .createdAt(order.getCreatedAt())
                         .status(order.getStatus())
                         .shopName(order.getShopName())
@@ -74,5 +81,21 @@ public class OrderService {
                 .toList();
 
         return new PageImpl<>(orderTableDtos, paginated.getPageable(), paginated.getTotalElements());
+    }
+
+    public String generateOrderId() {
+        return "ORD-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmm"));
+    }
+
+    public List<OrderDamageDto> searchOrders(String search) {
+        List<Order> orders = orderDao.searchOrders(search);
+        return orders.stream()
+                .map(order -> OrderDamageDto.builder()
+                        ._id(order.get_id())
+                        .orderId(order.getOrderId())
+                        .shopName(order.getShopName())
+                        .build())
+                .toList();
+
     }
 }

@@ -38,7 +38,5 @@ public class PurchaseDao {
         return purchaseTemplate.getAllPurchases(page, size, sortBy, sortDirection, search);
     }
 
-    public void updateStockByPurchaseItems(List<PurchaseItem> itemList) {
-        purchaseTemplate.updateStockByPurchaseItems(itemList);
-    }
+
 }

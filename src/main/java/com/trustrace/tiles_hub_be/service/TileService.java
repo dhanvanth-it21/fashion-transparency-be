@@ -5,11 +5,15 @@ import com.trustrace.tiles_hub_be.builder.tile.TileDetailDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileQtyDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileTableDto;
+import com.trustrace.tiles_hub_be.dao.OrderDao;
 import com.trustrace.tiles_hub_be.dao.TileDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
+import com.trustrace.tiles_hub_be.model.collections.damage.DamageLocation;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.model.collections.tile.TileCategory;
+import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderItem;
+import com.trustrace.tiles_hub_be.model.collections.tiles_list.PurchaseItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,6 +27,9 @@ public class TileService {
 
     @Autowired
     private TileDao tileDao;
+
+    @Autowired
+    private OrderDao orderDao;
 
 
     public Tile createTile(Tile tile) {
@@ -142,7 +149,10 @@ public class TileService {
                 .build();
     }
 
-    public List<TileQtyDto> searchTiles(String search) {
+    public List<TileQtyDto> searchTiles(String search, DamageLocation searchLocation, String givenId) {
+        if(searchLocation != null && searchLocation != DamageLocation.AT_WAREHOUSE) {
+            return searchTilesByLocation(search, searchLocation, givenId);
+        }
         List<Tile> tiles =  tileDao.searchTiles(search);
         return tiles.stream()
                 .map(tile -> {
@@ -155,12 +165,47 @@ public class TileService {
                 .toList();
     }
 
+    private List<TileQtyDto> searchTilesByLocation(String search, DamageLocation searchLocation, String givenId) {
+        if (searchLocation == DamageLocation.TO_RETAIL_SHOP) {
+            Order order = orderDao.findByOrderId(givenId).orElseThrow();
+            return order.getItemList().stream()
+                    .map(orderItem -> {
+                        Tile tile = tileDao.findById(orderItem.getTileId());
+                        return TileQtyDto.builder()
+                                ._id(orderItem.getTileId())
+                                .skuCode(tile.getSkuCode())
+                                .qty(orderItem.getRequiredQty())
+                                .build();
+                    })
+                    .toList();
+        } else {
+    return null;
+        }
+
+    }
+
     public void updateStockByOrderItems(List<OrderItem> orderItems) {
+        for (OrderItem orderItem : orderItems) {
+            Tile tile = tileDao.findById(orderItem.getTileId());
+            if (tile != null) {
+                tile.setQty(tile.getQty() - orderItem.getRequiredQty());
+                tileDao.save(tile);
+            } else {
+                throw new ResourceNotFoundException("Tile not found with ID: " + orderItem.getTileId());
+            }
+        }
+    }
 
-        orderItems.forEach(orderItem -> {
-            tileDao.updateStockByOrderItem(orderItem.getTileId(), orderItem.getRequiredQty());
-        });
-
+    public void updateStockByPurchaseItems(List<PurchaseItem> purchaseItems) {
+        for (PurchaseItem purchaseItem : purchaseItems) {
+            Tile tile = tileDao.findById(purchaseItem.getTileId());
+            if (tile != null) {
+                tile.setQty(tile.getQty() + purchaseItem.getAddQty());
+                tileDao.save(tile);
+            } else {
+                throw new ResourceNotFoundException("Tile not found with ID: " + purchaseItem.getTileId());
+            }
+        }
     }
 
 

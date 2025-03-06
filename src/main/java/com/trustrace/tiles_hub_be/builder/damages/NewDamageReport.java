@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class NewDamageReport {
     private String skuCode;
-    private String retailerId;
+    private String orderId;
+    private String purchaseId;
     private DamageLocation damageLocation;
     private int qty;
     private String remark;

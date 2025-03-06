@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -27,8 +29,12 @@ public class PurchaseService {
     @Autowired
     private SupplierService supplierService;
 
+    @Autowired TileService tileService;
+
     public Purchase createPurchase(NewPurchaseDto newPurchaseDto) {
+        String purchaseId = generatePurchaseId();
         Purchase purchase = Purchase.builder()
+                .purchaseId(purchaseId)
                 .purchaseId(newPurchaseDto.getPurchaseId())
                 .supplierId(newPurchaseDto.getSupplierId())
                 .recordedByUserId(newPurchaseDto.getRecordedByUserId())
@@ -59,6 +65,7 @@ public class PurchaseService {
         List<PurchaseTableDto> purchaseTableDtos = purchases.stream()
                 .map(purchase -> PurchaseTableDto.builder()
                         ._id(purchase.get_id())
+                        .purchaseId(purchase.getPurchaseId())
                         .createdAt(purchase.getCreatedAt())
                         .recordedByUserId(purchase.getRecordedByUserId())
                         .brandName(supplierService.getSupplierById(purchase.getSupplierId()).getBrandName())
@@ -69,17 +76,16 @@ public class PurchaseService {
     }
 
     public Purchase updatePurchaseStatus(String id, String status) {
-        if(PurchaseStatus.valueOf(status) == PurchaseStatus.VERIFIED
-                || PurchaseStatus.valueOf(status)== PurchaseStatus.REJECTED
-                || PurchaseStatus.valueOf(status)== PurchaseStatus.PENDING
-        ){
+        if (PurchaseStatus.valueOf(status) == PurchaseStatus.VERIFIED
+                || PurchaseStatus.valueOf(status) == PurchaseStatus.REJECTED
+                || PurchaseStatus.valueOf(status) == PurchaseStatus.PENDING) {
             Purchase purchase = getPurchaseById(id);
-            if(purchase.getStatus()== PurchaseStatus.VERIFIED){
+            if (purchase.getStatus() == PurchaseStatus.VERIFIED) {
                 throw new ResourceNotFoundException("Purchase already verified");
             }
             purchase.setStatus(PurchaseStatus.valueOf(status));
-            if(PurchaseStatus.valueOf(status)== PurchaseStatus.VERIFIED){
-                purchaseDao.updateStockByPurchaseItems(purchase.getItemList());
+            if (PurchaseStatus.valueOf(status) == PurchaseStatus.VERIFIED) {
+                tileService.updateStockByPurchaseItems(purchase.getItemList());
             }
             return purchaseDao.save(purchase);
         }
@@ -96,5 +102,9 @@ public class PurchaseService {
                 .brandName(supplierService.getSupplierById(purchase.getSupplierId()).getBrandName())
                 .status(purchase.getStatus())
                 .build();
+    }
+
+    public String generatePurchaseId() {
+       return "PUR" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmm"));
     }
 }

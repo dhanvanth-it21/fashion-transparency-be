@@ -18,6 +18,8 @@ public class PurchaseTableDto {
 
     private String _id;
 
+    private String purchaseId;
+
     private String brandName;
 
     private String recordedByUserId;

@@ -105,11 +105,11 @@ public class TileTemplate {
         return mongoTemplate.find(query, Tile.class);
     }
 
-    public void updateStockByOrderItem(String tileId, int requiredQty) {
-       Tile tile =  mongoTemplate.findById(tileId, Tile.class);
-       tile.setQty(tile.getQty() - requiredQty);
-       save(tile);
-    }
+//    public void updateStockByOrderItem(String tileId, int requiredQty) {
+//       Tile tile =  mongoTemplate.findById(tileId, Tile.class);
+//       tile.setQty(tile.getQty() - requiredQty);
+//       save(tile);
+//    }
 
     public Tile findBySkuCode(String tileSku) {
         Query query = new Query();

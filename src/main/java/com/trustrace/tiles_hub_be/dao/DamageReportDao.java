@@ -43,4 +43,8 @@ public class DamageReportDao {
     public Page<DamageReport> getAllDamageReports(int page, int size, String sortBy, String sortDirection, String search, DamageStatus filterBy) {
         return damageReportTemplate.getAllDamageReports(page, size, sortBy, sortDirection, search, filterBy);
     }
+
+    public List<DamageReport> findByOrderId(String orderId) {
+        return damageReportTemplate.findByOrderId(orderId);
+    }
 }

@@ -17,6 +17,8 @@ import java.util.List;
 public class OrderTableDto {
     private String _id;
 
+    private String orderId;
+
     private String shopName;
 
     private OrderStatus status;

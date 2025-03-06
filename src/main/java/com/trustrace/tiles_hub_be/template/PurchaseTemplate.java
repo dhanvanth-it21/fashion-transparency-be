@@ -58,15 +58,5 @@ public class PurchaseTemplate {
         return new PageImpl<>(purchases, pageable, total);
     }
 
-    public void updateStockByPurchaseItems(List<PurchaseItem> itemList) {
-        itemList.forEach(purchaseItem -> {
-            Query query = new Query();
-            query.addCriteria(Criteria.where("_id").is(purchaseItem.getTileId()));
-            Tile tile = mongoTemplate.findOne(query, Tile.class);
-            if(tile != null) {
-                tile.setQty(tile.getQty() + purchaseItem.getAddQty());
-                mongoTemplate.save(tile);
-            }
-        });
-    }
+
 }

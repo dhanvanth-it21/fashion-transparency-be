@@ -24,7 +24,8 @@ public class Purchase {
     @Id
     private String _id;
 
-    private String purchaseId; // this is just a id related to the purchase (not included in this project)
+
+    private String purchaseId;
 
     private String supplierId; //referencing the supplier
 

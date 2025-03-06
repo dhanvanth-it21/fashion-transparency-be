@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DamageReportDto {
     private String _id;
+    private String damageReportId;
     private String skuCode;
     private String reportedByUserId;
     private DamageLocation damageLocation;

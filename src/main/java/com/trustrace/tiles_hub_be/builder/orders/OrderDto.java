@@ -18,6 +18,8 @@ public class OrderDto {
 
     private String _id;
 
+    private String orderId;
+
     private String salesId;
 
     private String retailerShopId;

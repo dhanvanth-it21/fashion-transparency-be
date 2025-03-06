@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 public class NewOrderDto {
 
+
     private String salesId;
 
     private String shopId;

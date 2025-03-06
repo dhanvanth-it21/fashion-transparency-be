@@ -24,6 +24,8 @@ public class Order {
     @Id
     private String _id;
 
+    private String orderId; // unique order id
+
     private String salesId; // it is just a id of sales (not included in this project)
 
     private String shopId; // referencing the retail shop, the order placed at warehouse

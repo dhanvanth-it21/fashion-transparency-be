@@ -61,4 +61,19 @@ public class OrderTemplate {
         List<Order> orders = mongoTemplate.find(query, Order.class);
         return new PageImpl<>(orders, pageable, total);
     }
+
+    public List<Order> searchOrders(String search) {
+        Query query = new Query();
+        query.addCriteria(new Criteria().orOperator(
+                Criteria.where("shopName").regex(search, "i"),
+                Criteria.where("orderId").regex(search, "i")
+        ));
+        return mongoTemplate.find(query, Order.class);
+    }
+
+    public Optional<Order> findByOrderId(String givenId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("orderId").is(givenId));
+        return Optional.ofNullable(mongoTemplate.findOne(query, Order.class));
+    }
 }

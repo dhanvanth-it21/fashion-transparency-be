@@ -4,17 +4,24 @@ import com.trustrace.tiles_hub_be.builder.damages.DamageReportDto;
 import com.trustrace.tiles_hub_be.builder.damages.NewDamageReport;
 import com.trustrace.tiles_hub_be.builder.damages.UpdateDamageStatus;
 import com.trustrace.tiles_hub_be.dao.DamageReportDao;
+import com.trustrace.tiles_hub_be.dao.OrderDao;
+import com.trustrace.tiles_hub_be.dao.RetailerShopDao;
 import com.trustrace.tiles_hub_be.dao.TileDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
+import com.trustrace.tiles_hub_be.model.collections.Actor.RetailerShop;
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageLocation;
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageReport;
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageStatus;
 import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
+import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
+import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -27,9 +34,17 @@ public class DamageReportService {
     @Autowired
     private TileDao tileDao;
 
+    @Autowired
+    private OrderDao orderDao;
+
+    @Autowired
+    private RetailerShopDao retailerShopDao;
+
     public DamageReport createDamageReport(NewDamageReport newDamageReport) {
+        String damageReportId = getDamageReportId();
         DamageReport damageReport = DamageReport.builder()
                 .tileId(tileDao.findBySkuCode(newDamageReport.getSkuCode()).get_id())
+                .damageReportId(damageReportId)
                 .damageLocation(newDamageReport.getDamageLocation())
                 .qty(newDamageReport.getQty())
                 .remark(newDamageReport.getRemark())
@@ -38,7 +53,10 @@ public class DamageReportService {
                 .build();
 
         if(damageReport.getDamageLocation() == DamageLocation.TO_RETAIL_SHOP) {
-            damageReport.setRetailerId(newDamageReport.getRetailerId());
+            damageReport.setOrderId(newDamageReport.getOrderId());
+        }
+        else if(damageReport.getDamageLocation() == DamageLocation.FROM_MANUFACTURER) {
+            damageReport.setPurchaseId(newDamageReport.getPurchaseId());
         }
         return damageReportDao.save(damageReport);
     }
@@ -89,10 +107,43 @@ public class DamageReportService {
         report.setApprovedByUserId("67bbfe2f8d85f862f666bb10");
         damageReportDao.save(report);
 
-        Tile tile = tileDao.findById(report.getTileId());
-        tile.setQty(tile.getQty() - report.getQty());
-        tileDao.save(tile);
+
+        if (report.getDamageLocation() == DamageLocation.TO_RETAIL_SHOP) {
+            handleRetailShopDamage(report);
+        } else {
+            Tile tile = tileDao.findById(report.getTileId());
+            tile.setQty(tile.getQty() - report.getQty());
+            tileDao.save(tile);
+        }
     }
+
+    private void handleRetailShopDamage(DamageReport report) {
+        Order order = orderDao.findByOrderId(report.getOrderId()).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        int totalQtySold = 0;
+        for (OrderItem item : order.getItemList()) {
+            totalQtySold += item.getRequiredQty();
+        }
+        List<DamageReport> damageReports = damageReportDao.findByOrderId(report.getOrderId());
+        int totalDamagedQty = 0;
+        for (DamageReport damageReport : damageReports) {
+            totalDamagedQty += damageReport.getQty();
+        }
+        double damagePercentage = (double) totalDamagedQty / totalQtySold * 100;
+
+        if (damagePercentage > order.getDamagePercentage()) {
+            int compensationAmount = totalDamagedQty * 200;
+            System.out.println("Compensation amount: " + compensationAmount);
+            updateRetailShopCreditNote(order.getShopId(), compensationAmount);
+        }
+    }
+
+    private void updateRetailShopCreditNote(String shopId, int amount) {
+        RetailerShop shop = retailerShopDao.findById(shopId).orElseThrow(() -> new ResourceNotFoundException("Retail shop not found"));
+        shop.setCreditNote(shop.getCreditNote() + amount);
+        retailerShopDao.save(shop);
+    }
+
+
 
     public void rejectReport(String id) {
         DamageReport report = damageReportDao.findById(id).orElseThrow();
@@ -111,6 +162,7 @@ public class DamageReportService {
         List<DamageReportDto> reportDtos = reports.stream()
                 .map(report -> DamageReportDto.builder()
                         ._id(report.get_id())
+                        .damageReportId(report.getDamageReportId())
                         .skuCode(tileDao.findById(report.getTileId()).getSkuCode())
                         .damageLocation(report.getDamageLocation())
                         .qty(report.getQty())
@@ -131,5 +183,9 @@ public class DamageReportService {
                 .build();
 
         return updateDamageStatus;
+    }
+
+    public String getDamageReportId() {
+        return "DR" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmm"));
     }
 }
