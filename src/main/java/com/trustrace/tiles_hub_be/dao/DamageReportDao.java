@@ -47,4 +47,8 @@ public class DamageReportDao {
     public List<DamageReport> findByOrderId(String orderId) {
         return damageReportTemplate.findByOrderId(orderId);
     }
+
+    public Optional<DamageReport> findByTileIdAndOrderId(String id, String orderId) {
+        return damageReportTemplate.findByTileIdAndOrderId(id, orderId);
+    }
 }

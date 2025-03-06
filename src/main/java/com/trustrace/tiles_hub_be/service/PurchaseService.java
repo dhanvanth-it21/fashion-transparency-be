@@ -2,6 +2,7 @@ package com.trustrace.tiles_hub_be.service;
 
 import com.trustrace.tiles_hub_be.builder.orders.OrderTableDto;
 import com.trustrace.tiles_hub_be.builder.purchases.NewPurchaseDto;
+import com.trustrace.tiles_hub_be.builder.purchases.PurchaseDamageDto;
 import com.trustrace.tiles_hub_be.builder.purchases.PurchaseTableDto;
 import com.trustrace.tiles_hub_be.builder.purchases.UpdatePurchaseDto;
 import com.trustrace.tiles_hub_be.dao.PurchaseDao;
@@ -106,5 +107,16 @@ public class PurchaseService {
 
     public String generatePurchaseId() {
        return "PUR" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmm"));
+    }
+
+    public List<PurchaseDamageDto> searchPurchases(String search) {
+        List<Purchase> purchases = purchaseDao.searchPurchases(search);
+        return purchases.stream()
+                .map(purchase -> PurchaseDamageDto.builder()
+                        ._id(purchase.get_id())
+                        .purchaseId(purchase.getPurchaseId())
+                        .brandName(supplierService.getSupplierById(purchase.getSupplierId()).getBrandName())
+                        .build())
+                .toList();
     }
 }

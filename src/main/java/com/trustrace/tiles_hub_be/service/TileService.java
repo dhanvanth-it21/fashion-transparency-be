@@ -6,6 +6,7 @@ import com.trustrace.tiles_hub_be.builder.tile.TileDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileQtyDto;
 import com.trustrace.tiles_hub_be.builder.tile.TileTableDto;
 import com.trustrace.tiles_hub_be.dao.OrderDao;
+import com.trustrace.tiles_hub_be.dao.PurchaseDao;
 import com.trustrace.tiles_hub_be.dao.TileDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageLocation;
@@ -13,6 +14,7 @@ import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import com.trustrace.tiles_hub_be.model.collections.tile.TileCategory;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderItem;
+import com.trustrace.tiles_hub_be.model.collections.tiles_list.Purchase;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.PurchaseItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,9 @@ public class TileService {
 
     @Autowired
     private OrderDao orderDao;
+
+    @Autowired
+    private PurchaseDao purchaseDao;
 
 
     public Tile createTile(Tile tile) {
@@ -149,11 +154,11 @@ public class TileService {
                 .build();
     }
 
-    public List<TileQtyDto> searchTiles(String search, DamageLocation searchLocation, String givenId) {
+    public List<TileQtyDto> searchTiles(String search, DamageLocation searchLocation, String givenId, String brandName) {
         if(searchLocation != null && searchLocation != DamageLocation.AT_WAREHOUSE) {
             return searchTilesByLocation(search, searchLocation, givenId);
         }
-        List<Tile> tiles =  tileDao.searchTiles(search);
+        List<Tile> tiles =  tileDao.searchTiles(search, brandName);
         return tiles.stream()
                 .map(tile -> {
                     return TileQtyDto.builder()
@@ -178,7 +183,23 @@ public class TileService {
                                 .build();
                     })
                     .toList();
-        } else {
+        }
+        else if (searchLocation == DamageLocation.FROM_MANUFACTURER) {
+            System.out.println("givenId: " + givenId);
+            Purchase purchase = purchaseDao.findByPurchaseId(givenId).orElseThrow();
+
+            return purchase.getItemList().stream()
+                    .map(purchaseItem -> {
+                        Tile tile = tileDao.findById(purchaseItem.getTileId());
+                        return TileQtyDto.builder()
+                                ._id(purchaseItem.getTileId())
+                                .skuCode(tile.getSkuCode())
+                                .qty(purchaseItem.getAddQty())
+                                .build();
+                    })
+                    .toList();
+        }
+        else {
     return null;
         }
 

@@ -73,4 +73,10 @@ public class DamageReportTemplate {
     public List<DamageReport> findByOrderId(String orderId) {
         return mongoTemplate.find(new Query(Criteria.where("orderId").is(orderId)), DamageReport.class);
     }
+
+    public Optional<DamageReport> findByTileIdAndOrderId(String tileId, String orderId) {
+        Query query = new Query(Criteria.where("tileId").is(tileId).and("orderId").is(orderId));
+        return Optional.ofNullable(mongoTemplate.findOne(query, DamageReport.class));
+    }
+
 }

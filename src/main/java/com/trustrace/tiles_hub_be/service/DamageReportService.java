@@ -7,6 +7,7 @@ import com.trustrace.tiles_hub_be.dao.DamageReportDao;
 import com.trustrace.tiles_hub_be.dao.OrderDao;
 import com.trustrace.tiles_hub_be.dao.RetailerShopDao;
 import com.trustrace.tiles_hub_be.dao.TileDao;
+import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceAlreadyExistsException;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.Actor.RetailerShop;
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageLocation;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DamageReportService {
@@ -41,7 +43,15 @@ public class DamageReportService {
     private RetailerShopDao retailerShopDao;
 
     public DamageReport createDamageReport(NewDamageReport newDamageReport) {
+
+        Optional<DamageReport> existingReport = damageReportDao.findByTileIdAndOrderId(
+                tileDao.findBySkuCode(newDamageReport.getSkuCode()).get_id(), newDamageReport.getOrderId());
+        if (existingReport.isPresent()) {
+            throw new ResourceAlreadyExistsException("Damage report already exists for this tile and order");
+        }
+
         String damageReportId = getDamageReportId();
+        Tile tile = tileDao.findBySkuCode(newDamageReport.getSkuCode());
         DamageReport damageReport = DamageReport.builder()
                 .tileId(tileDao.findBySkuCode(newDamageReport.getSkuCode()).get_id())
                 .damageReportId(damageReportId)
@@ -57,6 +67,8 @@ public class DamageReportService {
         }
         else if(damageReport.getDamageLocation() == DamageLocation.FROM_MANUFACTURER) {
             damageReport.setPurchaseId(newDamageReport.getPurchaseId());
+            tile.setQty(tile.getQty() - damageReport.getQty());
+            tileDao.save(tile);
         }
         return damageReportDao.save(damageReport);
     }
@@ -110,7 +122,7 @@ public class DamageReportService {
 
         if (report.getDamageLocation() == DamageLocation.TO_RETAIL_SHOP) {
             handleRetailShopDamage(report);
-        } else {
+        } else if (report.getDamageLocation() != DamageLocation.FROM_MANUFACTURER) {
             Tile tile = tileDao.findById(report.getTileId());
             tile.setQty(tile.getQty() - report.getQty());
             tileDao.save(tile);
@@ -153,6 +165,12 @@ public class DamageReportService {
         report.setStatus(DamageStatus.REJECTED);
         report.setRemark("need to be handled later");
         damageReportDao.save(report);
+
+        if (report.getDamageLocation() == DamageLocation.FROM_MANUFACTURER) {
+            Tile tile = tileDao.findById(report.getTileId());
+            tile.setQty(tile.getQty() + report.getQty());
+            tileDao.save(tile);
+        }
     }
 
 

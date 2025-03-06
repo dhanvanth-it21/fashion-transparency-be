@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be.controllers;
 
 import com.trustrace.tiles_hub_be.builder.purchases.NewPurchaseDto;
+import com.trustrace.tiles_hub_be.builder.purchases.PurchaseDamageDto;
 import com.trustrace.tiles_hub_be.builder.purchases.PurchaseTableDto;
 import com.trustrace.tiles_hub_be.builder.purchases.UpdatePurchaseDto;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Purchase;
@@ -75,5 +76,14 @@ public class PurchaseController {
         UpdatePurchaseDto updatePurchaseDto = purchaseService.getPurchaseStatusById(id);
         return ResponseEntity.ok(ResponseUtil.success("Purchase status updated", updatePurchaseDto, null));
 
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<PurchaseDamageDto>>> searchPurchases(
+            @RequestParam(name = "search", defaultValue = "") String search
+    ) {
+        List<PurchaseDamageDto> purchaseDamageDtos = purchaseService.searchPurchases(search);
+        return ResponseEntity.ok(ResponseUtil.success("Purchases fetched", purchaseDamageDtos, null));
     }
 }

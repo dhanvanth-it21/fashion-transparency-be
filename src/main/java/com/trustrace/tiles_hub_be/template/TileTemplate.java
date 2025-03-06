@@ -7,6 +7,7 @@ import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -89,8 +90,20 @@ public class TileTemplate {
         return Optional.ofNullable(mongoTemplate.findOne(query, Tile.class));
     }
 
-    public List<Tile> searchTiles(String search) {
+    public List<Tile> searchTiles(String search, String brandName) {
         Query query = new Query();
+        if (!brandName.isEmpty()) {
+            try {
+                int brandId = Integer.parseInt(brandName);
+                if (brandId != 0) {
+                    System.out.println(brandName + " " + search);
+                    System.out.println(brandId == 0);
+                    query.addCriteria(Criteria.where("brandName").regex(brandName, "i"));
+                }
+            } catch (NumberFormatException e) {
+                query.addCriteria(Criteria.where("brandName").regex(brandName, "i"));
+            }
+        }
         query.addCriteria(new Criteria().orOperator(
                 Criteria.where("skuCode").regex(search, "i"),
                 Criteria.where("tileSize").regex(search, "i"),
@@ -102,14 +115,12 @@ public class TileTemplate {
                 Criteria.where("finishing").regex(search, "i")
         ));
         query.limit(10);
-        return mongoTemplate.find(query, Tile.class);
+        List<Tile> tiles =  mongoTemplate.find(query, Tile.class);
+        System.out.println(tiles);
+        return tiles;
     }
 
-//    public void updateStockByOrderItem(String tileId, int requiredQty) {
-//       Tile tile =  mongoTemplate.findById(tileId, Tile.class);
-//       tile.setQty(tile.getQty() - requiredQty);
-//       save(tile);
-//    }
+
 
     public Tile findBySkuCode(String tileSku) {
         Query query = new Query();

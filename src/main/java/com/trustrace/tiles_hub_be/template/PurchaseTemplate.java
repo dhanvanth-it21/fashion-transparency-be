@@ -59,4 +59,19 @@ public class PurchaseTemplate {
     }
 
 
+    public List<Purchase> searchPurchases(String search) {
+        Query query = new Query();
+        query.addCriteria(new Criteria().orOperator(
+                Criteria.where("purchaseId").regex(search, "i"),
+                Criteria.where("brandName").regex(search, "i"),
+                Criteria.where("email").regex(search, "i")
+        ));
+        return mongoTemplate.find(query, Purchase.class);
+    }
+
+    public Optional<Purchase> findByPurchaseId(String givenId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("purchaseId").is(givenId));
+        return Optional.ofNullable(mongoTemplate.findOne(query, Purchase.class));
+    }
 }

@@ -39,4 +39,11 @@ public class PurchaseDao {
     }
 
 
+    public List<Purchase> searchPurchases(String search) {
+        return purchaseTemplate.searchPurchases(search);
+    }
+
+    public Optional<Purchase> findByPurchaseId(String givenId) {
+        return purchaseTemplate.findByPurchaseId(givenId);
+    }
 }

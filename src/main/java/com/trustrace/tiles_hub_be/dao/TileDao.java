@@ -45,8 +45,8 @@ public class TileDao {
         return tileTemplate.findLastCreatedTile();
     }
 
-    public List<Tile> searchTiles(String search) {
-        return tileTemplate.searchTiles(search);
+    public List<Tile> searchTiles(String search, String brandName) {
+        return tileTemplate.searchTiles(search, brandName);
     }
 
 

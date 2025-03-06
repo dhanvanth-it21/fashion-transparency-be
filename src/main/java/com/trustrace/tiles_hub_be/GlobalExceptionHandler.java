@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be;
 
 
+import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceAlreadyExistsException;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.exceptionHandlers.RoleNotFoundException;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
@@ -38,6 +39,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<String>> handleResourceNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ResponseUtil.error(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<String>> handleResourceAlreadyExists(ResourceAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ResponseUtil.error(ex.getMessage(), null));
     }
 
