@@ -2,14 +2,14 @@ package com.trustrace.tiles_hub_be.service;
 
 import com.trustrace.tiles_hub_be.builder.orders.NewOrderDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderDamageDto;
+import com.trustrace.tiles_hub_be.builder.orders.OrderDetailDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderTableDto;
-import com.trustrace.tiles_hub_be.builder.suppier.SupplierTableDto;
+import com.trustrace.tiles_hub_be.builder.purchases.ItemListDetails;
 import com.trustrace.tiles_hub_be.dao.OrderDao;
 import com.trustrace.tiles_hub_be.dao.RetailerShopDao;
-import com.trustrace.tiles_hub_be.dao.TileDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
-import com.trustrace.tiles_hub_be.model.collections.Actor.Supplier;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
+import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderItem;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -98,4 +99,29 @@ public class OrderService {
                 .toList();
 
     }
+
+    public OrderDetailDto getOrderDetailsById(String id) {
+        Order order = orderDao.findById(id).orElseThrow(() -> new ResourceNotFoundException("no orders found with the provided id"));
+        return OrderDetailDto.builder()
+                .retailerShopId(order.getShopId())
+                .salesId(order.getSalesId())
+                .shopName(order.getShopName())
+                .orderId(order.getOrderId())
+                .status(order.getStatus())
+                .updatedAt(order.getUpdatedAt())
+                .createdAt(order.getCreatedAt())
+                .itemList(getItemListDetails(order.getItemList()))
+                .build();
+    }
+
+    private List<ItemListDetails> getItemListDetails(List<OrderItem> itemLists) {
+        return itemLists.stream()
+                .map(itemList -> ItemListDetails.builder()
+                        .qty(itemList.getRequiredQty())
+                        .skuCode(tileService.getTileById(itemList.getTileId()).getSkuCode())
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
+
 }

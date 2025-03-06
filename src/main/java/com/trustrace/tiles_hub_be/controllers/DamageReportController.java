@@ -36,9 +36,9 @@ public class DamageReportController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<DamageReport>> getDamageReportById(@PathVariable String id) {
-        DamageReport damageReport = damageReportService.getDamageReportById(id);
-        return ResponseEntity.ok(ResponseUtil.success("Damage report found", damageReport, null));
+    public ResponseEntity<ApiResponse<DamageReportDto>> getDamageReportById(@PathVariable String id) {
+        DamageReportDto damageReportDto = damageReportService.getDamageReportDetailById(id);
+        return ResponseEntity.ok(ResponseUtil.success("Damage report found", damageReportDto, null));
     }
 
     @GetMapping

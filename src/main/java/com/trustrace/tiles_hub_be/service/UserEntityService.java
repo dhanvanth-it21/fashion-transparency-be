@@ -1,6 +1,7 @@
 package com.trustrace.tiles_hub_be.service;
 
 import com.trustrace.tiles_hub_be.dao.UserEntityDao;
+import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.user.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,14 @@ public class UserEntityService {
 
     public Optional<UserEntity> findByName(String name) {
         Optional<UserEntity> userEntity = userEntityDao.findByName(name);
+        return userEntity;
+    }
+
+    public UserEntity findById(String id) {
+
+        UserEntity userEntity = userEntityDao.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No user exist with the provided id")
+        );
         return userEntity;
     }
 }

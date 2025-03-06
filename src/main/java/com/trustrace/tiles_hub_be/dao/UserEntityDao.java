@@ -31,4 +31,8 @@ public class UserEntityDao {
         Optional<UserEntity> userEntity = userEntityTemplate.findByName(name);
         return userEntity;
     }
+
+    public Optional<UserEntity> findById(String id) {
+        return userEntityTemplate.findById(id);
+    }
 }

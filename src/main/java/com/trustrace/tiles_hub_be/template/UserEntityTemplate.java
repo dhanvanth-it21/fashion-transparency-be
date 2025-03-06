@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -38,6 +39,11 @@ public class UserEntityTemplate {
         Query query = new Query();
         query.addCriteria(Criteria.where("name").is(name));
         UserEntity userEntity = mongoTemplate.findOne(query, UserEntity.class);
+        return Optional.ofNullable(userEntity);
+    }
+
+    public Optional<UserEntity> findById(String id) {
+        UserEntity userEntity  = mongoTemplate.findById(id, UserEntity.class);
         return Optional.ofNullable(userEntity);
     }
 }

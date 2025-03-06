@@ -1,5 +1,6 @@
 package com.trustrace.tiles_hub_be.builder.orders;
 
+import com.trustrace.tiles_hub_be.builder.purchases.ItemListDetails;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderItem;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderStatus;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderDto {
+public class OrderDetailDto {
 
     private String _id;
 
@@ -28,7 +29,7 @@ public class OrderDto {
 
     private OrderStatus status;
 
-    private List<OrderItem> itemList;
+    private List<ItemListDetails> itemList;
 
     private double damagePercentage;
 

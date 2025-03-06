@@ -1,15 +1,14 @@
 package com.trustrace.tiles_hub_be.service;
 
 import com.trustrace.tiles_hub_be.builder.orders.OrderTableDto;
-import com.trustrace.tiles_hub_be.builder.purchases.NewPurchaseDto;
-import com.trustrace.tiles_hub_be.builder.purchases.PurchaseDamageDto;
-import com.trustrace.tiles_hub_be.builder.purchases.PurchaseTableDto;
-import com.trustrace.tiles_hub_be.builder.purchases.UpdatePurchaseDto;
+import com.trustrace.tiles_hub_be.builder.purchases.*;
 import com.trustrace.tiles_hub_be.dao.PurchaseDao;
+import com.trustrace.tiles_hub_be.dao.TileDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Purchase;
 
+import com.trustrace.tiles_hub_be.model.collections.tiles_list.PurchaseItem;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.PurchaseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -30,7 +30,14 @@ public class PurchaseService {
     @Autowired
     private SupplierService supplierService;
 
-    @Autowired TileService tileService;
+    @Autowired
+    TileService tileService;
+
+    @Autowired
+    UserEntityService userEntityService;
+
+    @Autowired
+    TileDao tileDao;
 
     public Purchase createPurchase(NewPurchaseDto newPurchaseDto) {
         String purchaseId = generatePurchaseId();
@@ -38,7 +45,7 @@ public class PurchaseService {
                 .purchaseId(purchaseId)
                 .purchaseId(newPurchaseDto.getPurchaseId())
                 .supplierId(newPurchaseDto.getSupplierId())
-                .recordedByUserId(newPurchaseDto.getRecordedByUserId())
+                .recordedByUserId("67bbfe2f8d85f862f666bb10")
                 .itemList(newPurchaseDto.getItemList())
                 .damagePercentage(newPurchaseDto.getDamagePercentage())
                 .status(PurchaseStatus.PENDING)
@@ -48,10 +55,41 @@ public class PurchaseService {
 
     }
 
-    public Purchase getPurchaseById(String id) {
-        return purchaseDao.findById(id)
+    public PurchaseDetail getPurchaseDetailById(String id) {
+        Purchase purchase = purchaseDao.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Purchase not found with ID: " + id));
+        return PurchaseDetail.builder()
+                .purchaseId(purchase.getPurchaseId())
+                .recordedByUserName(userEntityService.findById(purchase.getRecordedByUserId()).getName())
+                .approvedByUserName(getApprovedUserName(purchase.getApprovedByUserId()))
+                .brandName(supplierService.getSupplierById(purchase.getSupplierId()).getBrandName())
+                .createdAt(purchase.getCreatedAt())
+                .damagePercentage(purchase.getDamagePercentage())
+                .status(purchase.getStatus())
+                .itemList(provideItemListDetails(purchase.getItemList()))
+                .build();
+
     }
+
+    private String getApprovedUserName(String approvedByUserId) {
+        if(approvedByUserId == null) {
+            return "No yet Approved";
+        }
+        else {
+            return userEntityService.findById(approvedByUserId).getName();
+        }
+    }
+
+    private List<ItemListDetails> provideItemListDetails(List<PurchaseItem> itemLists) {
+        return itemLists.stream().map(
+                itemList ->
+                        ItemListDetails.builder()
+                                .qty(itemList.getAddQty())
+                                .skuCode(tileDao.findById(itemList.getTileId()).getSkuCode())
+                                .build()
+        ).collect(Collectors.toList());
+    }
+
 
     public void deletePurchase(String id) {
         if (!purchaseDao.existsById(id)) {
@@ -69,6 +107,7 @@ public class PurchaseService {
                         .purchaseId(purchase.getPurchaseId())
                         .createdAt(purchase.getCreatedAt())
                         .recordedByUserId(purchase.getRecordedByUserId())
+                        .recordedByUserName(userEntityService.findById("67bbfe2f8d85f862f666bb10").getName())
                         .brandName(supplierService.getSupplierById(purchase.getSupplierId()).getBrandName())
                         .status(purchase.getStatus())
                         .build())
@@ -85,6 +124,7 @@ public class PurchaseService {
                 throw new ResourceNotFoundException("Purchase already verified");
             }
             purchase.setStatus(PurchaseStatus.valueOf(status));
+            purchase.setApprovedByUserId("67bbfe2f8d85f862f666bb10");
             if (PurchaseStatus.valueOf(status) == PurchaseStatus.VERIFIED) {
                 tileService.updateStockByPurchaseItems(purchase.getItemList());
             }
@@ -94,6 +134,19 @@ public class PurchaseService {
         throw new ResourceNotFoundException("Invalid status");
     }
 
+    private Purchase getByPurchaseId(String id) {
+        System.out.println(id);
+        return purchaseDao.findByPurchaseId(id).orElseThrow(
+                () -> new ResourceNotFoundException(" No Purchase found with purchase id")
+        );
+    }
+
+    private Purchase getPurchaseById(String id) {
+        System.out.println(id);
+        return purchaseDao.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(" No Purchase found with purchase id")
+        );
+    }
 
 
     public UpdatePurchaseDto getPurchaseStatusById(String id) {
@@ -106,7 +159,7 @@ public class PurchaseService {
     }
 
     public String generatePurchaseId() {
-       return "PUR" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmm"));
+        return "PUR" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmm"));
     }
 
     public List<PurchaseDamageDto> searchPurchases(String search) {

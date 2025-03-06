@@ -22,6 +22,6 @@ public class NewPurchaseDto {
 
     private double damagePercentage;
 
-    private String recordedByUserId;
+    private String recordedByUserName;
 
 }

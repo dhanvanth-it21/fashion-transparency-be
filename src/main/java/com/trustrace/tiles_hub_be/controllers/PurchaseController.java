@@ -1,9 +1,6 @@
 package com.trustrace.tiles_hub_be.controllers;
 
-import com.trustrace.tiles_hub_be.builder.purchases.NewPurchaseDto;
-import com.trustrace.tiles_hub_be.builder.purchases.PurchaseDamageDto;
-import com.trustrace.tiles_hub_be.builder.purchases.PurchaseTableDto;
-import com.trustrace.tiles_hub_be.builder.purchases.UpdatePurchaseDto;
+import com.trustrace.tiles_hub_be.builder.purchases.*;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Purchase;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ResponseUtil;
@@ -32,9 +29,9 @@ public class PurchaseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Purchase>> getPurchaseById(@PathVariable String id) {
-        Purchase purchase = purchaseService.getPurchaseById(id);
-        return ResponseEntity.ok(ResponseUtil.success("Purchase found", purchase, null));
+    public ResponseEntity<ApiResponse<PurchaseDetail>> getPurchaseById(@PathVariable String id) {
+        PurchaseDetail purchaseDetail = purchaseService.getPurchaseDetailById(id);
+        return ResponseEntity.ok(ResponseUtil.success("Purchase found", purchaseDetail, null));
     }
 
     @DeleteMapping("/{id}")
@@ -74,7 +71,7 @@ public class PurchaseController {
     @GetMapping("/get-purchase/{id}")
     public ResponseEntity<ApiResponse<UpdatePurchaseDto>> getPurchaseStatusById(@PathVariable String id) {
         UpdatePurchaseDto updatePurchaseDto = purchaseService.getPurchaseStatusById(id);
-        return ResponseEntity.ok(ResponseUtil.success("Purchase status updated", updatePurchaseDto, null));
+        return ResponseEntity.ok(ResponseUtil.success("Purchase status fetched", updatePurchaseDto, null));
 
     }
 

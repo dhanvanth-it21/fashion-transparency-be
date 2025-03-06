@@ -42,6 +42,9 @@ public class DamageReportService {
     @Autowired
     private RetailerShopDao retailerShopDao;
 
+    @Autowired
+    private UserEntityService userEntityService;
+
     public DamageReport createDamageReport(NewDamageReport newDamageReport) {
 
         Optional<DamageReport> existingReport = damageReportDao.findByTileIdAndOrderId(
@@ -186,9 +189,20 @@ public class DamageReportService {
                         .qty(report.getQty())
                         .status(report.getStatus())
                         .reportedByUserId(report.getReportedByUserId())
+                        .reportedByUserName(userEntityService.findById(report.getReportedByUserId()).getName())
+                        .approvedByUserName(getApprovedByUserName(report.getApprovedByUserId()))
                         .build())
                 .toList();
         return new PageImpl<>(reportDtos, paginated.getPageable(), paginated.getTotalElements());
+    }
+
+    private String getApprovedByUserName(String approvedByUserId) {
+        if(approvedByUserId == null) {
+            return "Not yet approved";
+        }
+        else  {
+            return userEntityService.findById(approvedByUserId).getName();
+        }
     }
 
     public UpdateDamageStatus getStatusById(String id) {
@@ -205,5 +219,21 @@ public class DamageReportService {
 
     public String getDamageReportId() {
         return "DR" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmm"));
+    }
+
+    public DamageReportDto getDamageReportDetailById(String id) {
+        DamageReport damageReport = damageReportDao.findById(id).orElseThrow(() -> new ResourceNotFoundException("No reports found with the given Id"));
+        return DamageReportDto.builder()
+                .reportedByUserId(damageReport.getReportedByUserId())
+                .reportedByUserName(userEntityService.findById(damageReport.getReportedByUserId()).getName())
+                .damageReportId(damageReport.getDamageReportId())
+                .damageReportId(damageReport.get_id())
+                .damageLocation(damageReport.getDamageLocation())
+                .qty(damageReport.getQty())
+                .status(damageReport.getStatus())
+                .skuCode(tileDao.findById(damageReport.getTileId()).getSkuCode())
+                .approvedByUserName(getApprovedByUserName(damageReport.getApprovedByUserId()))
+                .remark(damageReport.getRemark())
+                .build();
     }
 }

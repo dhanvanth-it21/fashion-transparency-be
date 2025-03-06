@@ -2,6 +2,7 @@ package com.trustrace.tiles_hub_be.controllers;
 
 import com.trustrace.tiles_hub_be.builder.orders.NewOrderDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderDamageDto;
+import com.trustrace.tiles_hub_be.builder.orders.OrderDetailDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderTableDto;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderStatus;
@@ -33,9 +34,9 @@ public class OrderController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Order>> getOrderById(@PathVariable String id) {
-        Order order = orderService.getOrderById(id);
-        return ResponseEntity.ok(ResponseUtil.success("Order found", order, null));
+    public ResponseEntity<ApiResponse<OrderDetailDto>> getOrderById(@PathVariable String id) {
+        OrderDetailDto orderDto = orderService.getOrderDetailsById(id);
+        return ResponseEntity.ok(ResponseUtil.success("Order found", orderDto, null));
     }
 
     @PutMapping("/status/{id}")
