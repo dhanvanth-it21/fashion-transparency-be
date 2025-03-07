@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -32,13 +33,22 @@ public class TileTemplate {
     }
 
     // Find all tiles
-    public Page<Tile> findAll(int page, int size, String sortBy, String sortDirection, String search){
+    public Page<Tile> findAll(int page, int size, String sortBy, String sortDirection, String search, String filterBy){
 
         Sort.Direction direction = sortDirection.toUpperCase().equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
         Query query = new Query();
         query.addCriteria(Criteria.where("archived").is(false));
+
+        if(filterBy.equalsIgnoreCase("LOW")) {
+            System.out.println(filterBy);
+//            query.addCriteria(Criteria.expression("{ $expr: { $lte: ['$qty', '$minimumStockLevel'] } }"));
+//            query.addCriteria(Criteria.expr(ExpressionOperators.Lte.valueOf("$qty").lessThanEqualTo("$minimumStockLevel")));
+
+
+        }
+
         if(search == null || search.equals("")) {
             //nothing to do
         } else {

@@ -58,10 +58,10 @@ public class TileController {
             @RequestParam(name = "size", defaultValue = "8") int size,
             @RequestParam(name = "sortBy", defaultValue = "_id") String sortBy,
             @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection,
-            @RequestParam(name = "search", defaultValue = "") String search
-
+            @RequestParam(name = "search", defaultValue = "") String search,
+            @RequestParam(name = "filterBy", defaultValue = "") String filterBy
     ) {
-        Page<TileTableDto> tileTableDtos = tileService.getAllTilesTableDetails(page, size, sortBy, sortDirection, search);
+        Page<TileTableDto> tileTableDtos = tileService.getAllTilesTableDetails(page, size, sortBy, sortDirection, search, filterBy);
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("pageable", tileTableDtos.getPageable());
         metadata.put("totalElements", tileTableDtos.getTotalElements());

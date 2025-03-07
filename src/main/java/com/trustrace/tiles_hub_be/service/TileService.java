@@ -95,8 +95,8 @@ public class TileService {
         return skuCode;
     }
 
-    public Page<TileTableDto> getAllTilesTableDetails(int page, int size, String sortBy, String sortDirection, String search) {
-        Page<Tile> paginated = tileDao.getAllTiles(page, size, sortBy, sortDirection, search);
+    public Page<TileTableDto> getAllTilesTableDetails(int page, int size, String sortBy, String sortDirection, String search, String filterBy) {
+        Page<Tile> paginated = tileDao.getAllTiles(page, size, sortBy, sortDirection, search, filterBy);
         List<Tile> tiles = paginated.getContent();
         List<TileTableDto> tileTableDtos = tiles.stream()
                 .map(tile -> {
@@ -108,12 +108,18 @@ public class TileService {
                     tileTableDto.setModelName(tile.getModelName());
                     tileTableDto.setQty(tile.getQty());
                     tileTableDto.setPiecesPerBox(tile.getPiecesPerBox());
+                    tileTableDto.setUnderLowStock(checkStockQty(tile.getQty(), tile.getMinimumStockLevel()));
                     return tileTableDto;
                 })
                 .toList();
         return new PageImpl<>(tileTableDtos, paginated.getPageable(), paginated.getTotalElements());
 
     }
+
+    private boolean checkStockQty(int qty, int minimumStockLevel) {
+        return qty <= minimumStockLevel;
+    }
+
 
     public TileDetailDto getTileDetailById(String id) {
         Tile tile = getTileById(id);

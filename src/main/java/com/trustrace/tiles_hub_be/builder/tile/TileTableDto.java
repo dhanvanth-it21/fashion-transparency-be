@@ -16,4 +16,5 @@ public class TileTableDto {
     private String modelName;
     private int qty;
     private int piecesPerBox;
+    private boolean underLowStock;
 }
