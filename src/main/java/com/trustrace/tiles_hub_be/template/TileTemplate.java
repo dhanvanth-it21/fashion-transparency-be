@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,8 +45,8 @@ public class TileTemplate {
 
         if(filterBy.equalsIgnoreCase("LOW")) {
             System.out.println(filterBy);
-//            query.addCriteria(Criteria.expression("{ $expr: { $lte: ['$qty', '$minimumStockLevel'] } }"));
-//            query.addCriteria(Criteria.expr(ExpressionOperators.Lte.valueOf("$qty").lessThanEqualTo("$minimumStockLevel")));
+
+           //-----------------------------------
 
 
         }
