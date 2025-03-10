@@ -33,6 +33,11 @@ public class UserEntityService {
         return userEntity;
     }
 
+    public Optional<UserEntity> findByEmail(String email) {
+        Optional<UserEntity> userEntity = userEntityDao.findByEmail(email);
+        return userEntity;
+    }
+
     public UserEntity findById(String id) {
 
         UserEntity userEntity = userEntityDao.findById(id).orElseThrow(

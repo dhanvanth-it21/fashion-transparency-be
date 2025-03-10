@@ -21,16 +21,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     /**
      * Loads user details by username.
      *
-     * @param username The username of the user.
+     * @param email The username of the user.
      * @return UserDetails containing user information.
      * @throws UsernameNotFoundException if the user is not found.
      */
     @Override
     @Transactional // Ensures that the method is transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // Attempt to find the user by username
-        UserEntity userEntity = userEntityService.findByName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+        UserEntity userEntity = userEntityService.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email id: " + email));
 
         // Return UserDetails implementation for the found user
         return UserDetailsImpl.build(userEntity);

@@ -46,4 +46,11 @@ public class UserEntityTemplate {
         UserEntity userEntity  = mongoTemplate.findById(id, UserEntity.class);
         return Optional.ofNullable(userEntity);
     }
+
+    public Optional<UserEntity> findByEmail(String email) {
+        Query query  = new Query();
+        query.addCriteria(Criteria.where("email").is(email));
+        UserEntity userEntity = mongoTemplate.findOne(query, UserEntity.class);
+        return Optional.ofNullable(userEntity);
+    }
 }

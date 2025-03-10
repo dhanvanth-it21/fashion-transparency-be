@@ -35,4 +35,9 @@ public class UserEntityDao {
     public Optional<UserEntity> findById(String id) {
         return userEntityTemplate.findById(id);
     }
+
+    public Optional<UserEntity> findByEmail(String email) {
+        Optional<UserEntity> userEntity = userEntityTemplate.findByEmail(email);
+        return userEntity;
+    }
 }
