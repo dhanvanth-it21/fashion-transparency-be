@@ -92,7 +92,7 @@ public class TileController {
             @RequestParam(name = "search", defaultValue = "") String search,
             @RequestParam(name = "location", defaultValue = "")DamageLocation location,
             @RequestParam(name = "givenId", defaultValue = "") String givenId,
-            @RequestParam(name = "brandName", defaultValue = "0") String brandName
+            @RequestParam(name = "brandName", defaultValue = "") String brandName
             ) {
         List<TileQtyDto> tileQtyDtos = tileService.searchTiles(search, location, givenId, brandName);
         return ResponseEntity.ok(ResponseUtil.success("Tiles fetched", tileQtyDtos, null));

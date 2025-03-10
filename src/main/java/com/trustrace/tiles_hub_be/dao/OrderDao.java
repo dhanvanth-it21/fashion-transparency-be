@@ -43,4 +43,12 @@ public class OrderDao {
     public Optional<Order> findByOrderId(String givenId) {
         return orderTemplate.findByOrderId(givenId);
     }
+
+    public int getTotalPendingOrders() {
+        return orderTemplate.getTotalPendingOrders();
+    }
+
+    public int getTotalOrders() {
+        return orderTemplate.getTotalOrders();
+    }
 }

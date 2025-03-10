@@ -1,5 +1,6 @@
 package com.trustrace.tiles_hub_be.template;
 
+import com.trustrace.tiles_hub_be.model.collections.damage.DamageLocation;
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageReport;
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageStatus;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
@@ -79,4 +80,27 @@ public class DamageReportTemplate {
         return Optional.ofNullable(mongoTemplate.findOne(query, DamageReport.class));
     }
 
+    public int getTotalUnderReviewDamageReports() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("status").is(DamageStatus.UNDER_REVIEW));
+        return (int) mongoTemplate.count(query, DamageReport.class);
+    }
+
+    public int getTotalUnderReviewDamageReportsForWarehouse() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("status").is(DamageStatus.UNDER_REVIEW).and("damageLocation").is(DamageLocation.AT_WAREHOUSE));
+        return (int) mongoTemplate.count(query, DamageReport.class);
+    }
+
+    public int getTotalUnderReviewDamageReportsForRetailShop() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("status").is(DamageStatus.UNDER_REVIEW).and("damageLocation").is(DamageLocation.TO_RETAIL_SHOP));
+        return (int) mongoTemplate.count(query, DamageReport.class);
+    }
+
+    public int getTotalUnderReviewDamageReportsForManufacturer() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("status").is(DamageStatus.UNDER_REVIEW).and("damageLocation").is(DamageLocation.FROM_MANUFACTURER));
+        return (int) mongoTemplate.count(query, DamageReport.class);
+    }
 }

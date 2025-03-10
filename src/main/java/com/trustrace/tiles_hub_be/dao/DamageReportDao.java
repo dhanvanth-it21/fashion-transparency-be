@@ -51,4 +51,20 @@ public class DamageReportDao {
     public Optional<DamageReport> findByTileIdAndOrderId(String id, String orderId) {
         return damageReportTemplate.findByTileIdAndOrderId(id, orderId);
     }
+
+    public int getTotalUnseenDamagesReported() {
+        return damageReportTemplate.getTotalUnderReviewDamageReports();
+    }
+
+    public int getTotalUnseenDamagesReportedForWarehouse() {
+        return damageReportTemplate.getTotalUnderReviewDamageReportsForWarehouse();
+    }
+
+    public int getTotalUnseenDamagesReportedForRetailShop() {
+        return damageReportTemplate.getTotalUnderReviewDamageReportsForRetailShop();
+    }
+
+    public int getTotalUnseenDamagesReportedForManufacturer() {
+        return damageReportTemplate.getTotalUnderReviewDamageReportsForManufacturer();
+    }
 }

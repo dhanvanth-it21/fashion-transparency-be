@@ -139,4 +139,10 @@ public class TileTemplate {
         query.addCriteria(Criteria.where("skuCode").is(tileSku));
         return mongoTemplate.findOne(query, Tile.class);
     }
+
+    public int getTotalTileCount() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("archived").is(false));
+        return (int) mongoTemplate.count(query, Tile.class);
+    }
 }

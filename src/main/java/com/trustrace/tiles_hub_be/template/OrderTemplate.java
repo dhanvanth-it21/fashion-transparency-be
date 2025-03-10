@@ -76,4 +76,14 @@ public class OrderTemplate {
         query.addCriteria(Criteria.where("orderId").is(givenId));
         return Optional.ofNullable(mongoTemplate.findOne(query, Order.class));
     }
+
+    public int getTotalPendingOrders() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("status").is(OrderStatus.PENDING));
+        return (int) mongoTemplate.count(query, Order.class);
+    }
+
+    public int getTotalOrders() {
+        return (int) mongoTemplate.count(new Query(), Order.class);
+    }
 }
