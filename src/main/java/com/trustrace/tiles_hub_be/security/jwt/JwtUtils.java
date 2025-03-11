@@ -38,7 +38,7 @@ public class JwtUtils {
 
         //build and return the JWT token
         return Jwts.builder()
-                .setSubject((userPrincipal.getUsername())) // Set the subject (username)
+                .setSubject((userPrincipal.getEmail())) // Set the subject (username)
                 .setIssuedAt(new Date()) // Set the issue date
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)) // Set the expiration date
                 .signWith(key(), SignatureAlgorithm.HS256) // Sign the token using the secret key and algorithm
@@ -64,7 +64,7 @@ public class JwtUtils {
     public String getUserNameFromJwtToken(String token) {
         // Parse the JWT token and return the subject (username)
         return Jwts.parserBuilder().setSigningKey(key()).build()
-                .parseClaimsJws(token).getBody().get("email", String.class);
+                .parseClaimsJws(token).getBody().getSubject();
     }
 
     /**
