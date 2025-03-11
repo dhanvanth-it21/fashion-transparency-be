@@ -64,7 +64,7 @@ public class JwtUtils {
     public String getUserNameFromJwtToken(String token) {
         // Parse the JWT token and return the subject (username)
         return Jwts.parserBuilder().setSigningKey(key()).build()
-                .parseClaimsJws(token).getBody().getSubject();
+                .parseClaimsJws(token).getBody().get("email", String.class);
     }
 
     /**
