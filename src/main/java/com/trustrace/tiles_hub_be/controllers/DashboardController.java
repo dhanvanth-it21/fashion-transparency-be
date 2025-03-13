@@ -32,4 +32,10 @@ public class DashboardController {
         return ResponseEntity.ok(ResponseUtil.success("Damage Metrics Data fetched", underReviewDamageMetrics, null));
     }
 
+    @GetMapping("/total-low-stock")
+    public ResponseEntity<ApiResponse<Integer>> getTotalLowStocks() {
+        Integer totalLowStocks = dashboardService.getTotalLowStocks();
+        return ResponseEntity.ok(ResponseUtil.success("Total low stock fetched", totalLowStocks, null));
+    }
+
 }

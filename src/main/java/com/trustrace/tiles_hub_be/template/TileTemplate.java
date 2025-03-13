@@ -145,7 +145,13 @@ public class TileTemplate {
     public int getTotalTileCount() {
         Query query = new Query();
         query.addCriteria(Criteria.where("archived").is(false));
-        return (int) mongoTemplate.count(query, Tile.class);
+        return (int)mongoTemplate.count(query, Tile.class);
     }
 
+    public Integer getTotalLowStocks() {
+        Query query = new Query();
+        AggregationExpression expr = ComparisonOperators.Lte.valueOf("qty").lessThanEqualTo("minimumStockLevel");
+        query.addCriteria(Criteria.where("$expr").is(expr));
+        return (int)mongoTemplate.count(query, Tile.class);
+    }
 }

@@ -62,4 +62,8 @@ public class TileDao {
     public Tile findBySkuCode(String tileSku) {
         return tileTemplate.findBySkuCode(tileSku);
     }
+
+    public Integer getTotalLowStocks() {
+        return tileTemplate.getTotalLowStocks();
+    }
 }

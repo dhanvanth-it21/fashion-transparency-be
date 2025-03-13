@@ -3,6 +3,7 @@ package com.trustrace.tiles_hub_be.service;
 import com.trustrace.tiles_hub_be.dao.DamageReportDao;
 import com.trustrace.tiles_hub_be.dao.DashboardDao;
 import com.trustrace.tiles_hub_be.dao.OrderDao;
+import com.trustrace.tiles_hub_be.dao.TileDao;
 import com.trustrace.tiles_hub_be.model.collections.dashboard.OverviewMetrics;
 import com.trustrace.tiles_hub_be.model.collections.dashboard.UnderReviewDamageMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class DashboardService {
 
     @Autowired
     private DamageReportDao damageReportDao;
+
+    @Autowired
+    private TileDao tileDao;
 
     public OverviewMetrics getOverviewMetrics() {
         int totalInventoryItems = getTotalInventoryItem();
@@ -60,5 +64,9 @@ public class DashboardService {
                 .retailShop(retailShop)
                 .manufacturer(manufacturer)
                 .build();
+    }
+
+    public Integer getTotalLowStocks() {
+        return tileDao.getTotalLowStocks();
     }
 }
