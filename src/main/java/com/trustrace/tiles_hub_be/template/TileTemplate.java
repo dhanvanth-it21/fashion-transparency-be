@@ -7,7 +7,10 @@ import com.trustrace.tiles_hub_be.model.collections.tile.Tile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.AggregationExpression;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
+import org.springframework.data.mongodb.core.aggregation.ComparisonOperators;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -44,9 +47,8 @@ public class TileTemplate {
         query.addCriteria(Criteria.where("archived").is(false));
 
         if(filterBy.equalsIgnoreCase("LOW")) {
-            System.out.println(filterBy);
-
-           //-----------------------------------
+            AggregationExpression expr = ComparisonOperators.Lte.valueOf("qty").lessThanEqualTo("minimumStockLevel");
+            query.addCriteria(Criteria.where("$expr").is(expr));
 
 
         }
@@ -145,4 +147,5 @@ public class TileTemplate {
         query.addCriteria(Criteria.where("archived").is(false));
         return (int) mongoTemplate.count(query, Tile.class);
     }
+
 }
