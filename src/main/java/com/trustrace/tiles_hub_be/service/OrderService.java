@@ -6,18 +6,25 @@ import com.trustrace.tiles_hub_be.builder.orders.OrderDetailDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderTableDto;
 import com.trustrace.tiles_hub_be.builder.purchases.ItemListDetails;
 import com.trustrace.tiles_hub_be.dao.OrderDao;
+import com.trustrace.tiles_hub_be.dao.OrderTrackerDao;
 import com.trustrace.tiles_hub_be.dao.RetailerShopDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
+import com.trustrace.tiles_hub_be.model.collections.activityLogs.orderTracking.OrderStatusHistory;
+import com.trustrace.tiles_hub_be.model.collections.activityLogs.orderTracking.OrderTracker;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderItem;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +40,9 @@ public class OrderService {
     @Autowired
     private TileService tileService;
 
+    @Autowired
+    private OrderTrackerDao orderTrackerDao;
+
     public Order createOrder(NewOrderDto newOrderDto) {
         String orderId = generateOrderId();
        Order order = Order.builder()
@@ -47,7 +57,29 @@ public class OrderService {
 
         Order savedOrder = orderDao.save(order);
         tileService.updateStockByOrderItems(order.getItemList());
+
+        OrderTracker orderTracker = OrderTracker.builder()
+                .currentStatus(OrderStatus.PENDING)
+                .createdBy(getAuthenticatedUserEmail())
+                .orderId(order.getOrderId())
+                .statusHistory(new ArrayList<>())
+                .build();
+        orderTracker.getStatusHistory().add(
+                OrderStatusHistory.builder()
+                        .status(OrderStatus.PENDING)
+                        .changedBy(orderTracker.getCreatedBy())
+                        .changedAt(savedOrder.getCreatedAt())
+                        .build()
+        );
+        orderTrackerDao.save(orderTracker);
+
         return savedOrder;
+    }
+
+
+    private String getAuthenticatedUserEmail() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ((UserDetails) principal).getUsername();
     }
 
     public Order getOrderById(String id) {
@@ -58,7 +90,21 @@ public class OrderService {
     public Order updateOrderStatus(String id, OrderStatus status) {
         Order order = getOrderById(id);
         order.setStatus(status);
-        return orderDao.save(order);
+        Order savedOrder =  orderDao.save(order);
+
+        OrderTracker orderTracker = orderTrackerDao.getByOrderId(savedOrder.getOrderId());
+        orderTracker.setCurrentStatus(savedOrder.getStatus());
+        orderTracker.getStatusHistory().add(
+                OrderStatusHistory.builder()
+                        .status(savedOrder.getStatus())
+                        .changedBy(getAuthenticatedUserEmail())
+                        .changedAt(savedOrder.getUpdatedAt())
+                        .build()
+        );
+        orderTrackerDao.save(orderTracker);
+
+
+        return savedOrder;
     }
 
     public void deleteOrder(String id) {

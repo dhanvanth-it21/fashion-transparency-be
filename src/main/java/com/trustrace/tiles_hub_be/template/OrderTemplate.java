@@ -51,7 +51,7 @@ public class OrderTemplate {
             ));
         }
 
-        if(orderStatus != null && (orderStatus == OrderStatus.PENDING || orderStatus == OrderStatus.DISPATCHED)) {
+        if(orderStatus != null && (orderStatus == OrderStatus.PENDING || orderStatus == OrderStatus.DISPATCHED || orderStatus == OrderStatus.PICKING)) {
             query.addCriteria(Criteria.where("status").is(orderStatus));
         }
         long total = mongoTemplate.count(query, Order.class);
