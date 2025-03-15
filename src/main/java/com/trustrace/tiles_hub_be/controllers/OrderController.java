@@ -4,6 +4,7 @@ import com.trustrace.tiles_hub_be.builder.orders.NewOrderDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderDamageDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderDetailDto;
 import com.trustrace.tiles_hub_be.builder.orders.OrderTableDto;
+import com.trustrace.tiles_hub_be.model.collections.activityLogs.orderTracking.OrderTracker;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderStatus;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
@@ -37,6 +38,12 @@ public class OrderController {
     public ResponseEntity<ApiResponse<OrderDetailDto>> getOrderById(@PathVariable String id) {
         OrderDetailDto orderDto = orderService.getOrderDetailsById(id);
         return ResponseEntity.ok(ResponseUtil.success("Order found", orderDto, null));
+    }
+
+    @GetMapping("order-tracker/{id}")
+    public ResponseEntity<ApiResponse<OrderTracker>> getOrderTrackerById(@PathVariable String id) {
+        OrderTracker orderTracker = orderService.getOrderTrackerById(id);
+        return ResponseEntity.ok(ResponseUtil.success("Order Tracker found", orderTracker, null));
     }
 
     @PutMapping("/status/{id}")

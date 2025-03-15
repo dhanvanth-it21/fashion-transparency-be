@@ -170,4 +170,8 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    public OrderTracker getOrderTrackerById(String id) {
+        Order order = orderDao.findById(id).orElseThrow(() -> new ResourceNotFoundException("no orders found with the provided id"));
+        return orderTrackerDao.getByOrderId(order.getOrderId());
+    }
 }
