@@ -46,9 +46,9 @@ public class DamageReport {
 
 
 
-    private String reportedByUserId; // referencing the user reported the damage
+    private String reportedBy; // referencing the user reported the damage
 
-    private String approvedByUserId; // referencing the user approved after the inspection
+    private String approvedBy; // referencing the user approved after the inspection
 
     @CreatedDate
     private Date createdAt;

@@ -33,9 +33,9 @@ public class Purchase {
 
     private double damagePercentage; //acceptable damage allowed in the shipment
 
-    private String recordedByUserId; //referencing the user who is recordered the list in the system
+    private String recordedBy; //referencing the user who is recordered the list in the system
 
-    private String approvedByUserId; // referencing the user who approved it
+    private String approvedBy; // referencing the user who approved it
 
     private PurchaseStatus status; // status of the purchase
 

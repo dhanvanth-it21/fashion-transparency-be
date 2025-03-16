@@ -19,6 +19,8 @@ import com.trustrace.tiles_hub_be.model.collections.tiles_list.OrderItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -62,7 +64,7 @@ public class DamageReportService {
                 .qty(newDamageReport.getQty())
                 .remark(newDamageReport.getRemark())
                 .status(DamageStatus.UNDER_REVIEW)
-                .reportedByUserId("67bbfe2f8d85f862f666bb10")
+                .reportedBy(getAuthenticatedUserEmail())
                 .build();
 
         if(damageReport.getDamageLocation() == DamageLocation.TO_RETAIL_SHOP) {
@@ -70,6 +72,10 @@ public class DamageReportService {
         }
         else if(damageReport.getDamageLocation() == DamageLocation.FROM_MANUFACTURER) {
             damageReport.setPurchaseId(newDamageReport.getPurchaseId());
+            tile.setQty(tile.getQty() - damageReport.getQty());
+            tileDao.save(tile);
+        }
+        else if (damageReport.getDamageLocation() == DamageLocation.AT_WAREHOUSE) {
             tile.setQty(tile.getQty() - damageReport.getQty());
             tileDao.save(tile);
         }
@@ -92,8 +98,8 @@ public class DamageReportService {
         existingReport.setQty(updatedReport.getQty());
         existingReport.setRemark(updatedReport.getRemark());
         existingReport.setStatus(updatedReport.getStatus());
-        existingReport.setReportedByUserId(updatedReport.getReportedByUserId());
-        existingReport.setApprovedByUserId(updatedReport.getApprovedByUserId());
+        existingReport.setReportedBy(updatedReport.getReportedBy());
+        existingReport.setApprovedBy(updatedReport.getApprovedBy());
         return damageReportDao.save(existingReport);
     }
 
@@ -119,16 +125,12 @@ public class DamageReportService {
             throw new ResourceNotFoundException("This has been aldready reviewed");
         }
         report.setStatus(DamageStatus.APPROVED);
-        report.setApprovedByUserId("67bbfe2f8d85f862f666bb10");
+        report.setApprovedBy(getAuthenticatedUserEmail());
         damageReportDao.save(report);
 
 
         if (report.getDamageLocation() == DamageLocation.TO_RETAIL_SHOP) {
             handleRetailShopDamage(report);
-        } else if (report.getDamageLocation() != DamageLocation.FROM_MANUFACTURER) {
-            Tile tile = tileDao.findById(report.getTileId());
-            tile.setQty(tile.getQty() - report.getQty());
-            tileDao.save(tile);
         }
     }
 
@@ -169,7 +171,7 @@ public class DamageReportService {
         report.setRemark("need to be handled later");
         damageReportDao.save(report);
 
-        if (report.getDamageLocation() == DamageLocation.FROM_MANUFACTURER) {
+        if (report.getDamageLocation() == DamageLocation.FROM_MANUFACTURER || report.getDamageLocation() == DamageLocation.AT_WAREHOUSE) {
             Tile tile = tileDao.findById(report.getTileId());
             tile.setQty(tile.getQty() + report.getQty());
             tileDao.save(tile);
@@ -178,7 +180,8 @@ public class DamageReportService {
 
 
     public Page<DamageReportDto> getAllDamageReportsTableDetails(int page, int size, String sortBy, String sortDirection, String search, DamageStatus filterBy) {
-        Page<DamageReport> paginated = damageReportDao.getAllDamageReports(page, size, sortBy, sortDirection, search, filterBy);
+        String email = getAuthenticatedUserEmail();
+        Page<DamageReport> paginated = damageReportDao.getAllDamageReports(page, size, sortBy, sortDirection, search, filterBy, email);
         List<DamageReport> reports = paginated.getContent();
         List<DamageReportDto> reportDtos = reports.stream()
                 .map(report -> DamageReportDto.builder()
@@ -188,20 +191,19 @@ public class DamageReportService {
                         .damageLocation(report.getDamageLocation())
                         .qty(report.getQty())
                         .status(report.getStatus())
-                        .reportedByUserId(report.getReportedByUserId())
-                        .reportedByUserName(userEntityService.findById(report.getReportedByUserId()).getName())
-                        .approvedByUserName(getApprovedByUserName(report.getApprovedByUserId()))
+                        .reportedBy(report.getReportedBy())
+                        .approvedBy(getApprovedBy(report.getApprovedBy()))
                         .build())
                 .toList();
         return new PageImpl<>(reportDtos, paginated.getPageable(), paginated.getTotalElements());
     }
 
-    private String getApprovedByUserName(String approvedByUserId) {
-        if(approvedByUserId == null) {
+    private String getApprovedBy(String approvedBy) {
+        if(approvedBy == null) {
             return "Not yet approved";
         }
         else  {
-            return userEntityService.findById(approvedByUserId).getName();
+            return approvedBy;
         }
     }
 
@@ -224,16 +226,21 @@ public class DamageReportService {
     public DamageReportDto getDamageReportDetailById(String id) {
         DamageReport damageReport = damageReportDao.findById(id).orElseThrow(() -> new ResourceNotFoundException("No reports found with the given Id"));
         return DamageReportDto.builder()
-                .reportedByUserId(damageReport.getReportedByUserId())
-                .reportedByUserName(userEntityService.findById(damageReport.getReportedByUserId()).getName())
+                .reportedBy(damageReport.getReportedBy())
                 .damageReportId(damageReport.getDamageReportId())
                 .damageReportId(damageReport.get_id())
                 .damageLocation(damageReport.getDamageLocation())
                 .qty(damageReport.getQty())
                 .status(damageReport.getStatus())
                 .skuCode(tileDao.findById(damageReport.getTileId()).getSkuCode())
-                .approvedByUserName(getApprovedByUserName(damageReport.getApprovedByUserId()))
+                .approvedBy(getApprovedBy(damageReport.getApprovedBy()))
                 .remark(damageReport.getRemark())
                 .build();
     }
+
+    private String getAuthenticatedUserEmail() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ((UserDetails) principal).getUsername();
+    }
+
 }

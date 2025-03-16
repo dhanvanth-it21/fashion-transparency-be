@@ -21,8 +21,8 @@ public class PurchaseDetail {
     private String brandName;
     private List<ItemListDetails> itemList;
     private double damagePercentage;
-    private String recordedByUserName;
-    private String approvedByUserName;
+    private String recordedBy;
+    private String approvedBy;
     private PurchaseStatus status;
     private Date createdAt;
 }

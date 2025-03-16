@@ -22,9 +22,9 @@ public class PurchaseTableDto {
 
     private String brandName;
 
-    private String recordedByUserId;
+//    private String recordedByUserId;
 
-    private String recordedByUserName;
+    private String recordedBy;
 
     private Date createdAt;
 

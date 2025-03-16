@@ -4,9 +4,12 @@ import com.trustrace.tiles_hub_be.dao.DamageReportDao;
 import com.trustrace.tiles_hub_be.dao.DashboardDao;
 import com.trustrace.tiles_hub_be.dao.OrderDao;
 import com.trustrace.tiles_hub_be.dao.TileDao;
+import com.trustrace.tiles_hub_be.model.collections.dashboard.EmployeeOverviewMetrics;
 import com.trustrace.tiles_hub_be.model.collections.dashboard.OverviewMetrics;
 import com.trustrace.tiles_hub_be.model.collections.dashboard.UnderReviewDamageMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -68,5 +71,22 @@ public class DashboardService {
 
     public Integer getTotalLowStocks() {
         return tileDao.getTotalLowStocks();
+    }
+
+    public EmployeeOverviewMetrics getEmployeeOverviewMetrics() {
+        return EmployeeOverviewMetrics.builder()
+                .totalInventoryItems(dashboardDao.getTotalInventoryItem())
+                .totalPickingOrders(orderDao.getTotalPickingOrders())
+                .totalDamageReports(damageReportDao.getTotalDamageReports(getAuthenticatedUserEmail()))
+                .approvedDamagedReports(damageReportDao.getTotalApprovedDamageReports(getAuthenticatedUserEmail()))
+                .rejectedDamagedReports(damageReportDao.getTotalRejectedDamageReports(getAuthenticatedUserEmail()))
+                .underReviewDamagedReports(damageReportDao.getTotalUnderReviewDamageReports(getAuthenticatedUserEmail()))
+                .build();
+    }
+
+
+    private String getAuthenticatedUserEmail() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ((UserDetails) principal).getUsername();
     }
 }

@@ -1,5 +1,6 @@
 package com.trustrace.tiles_hub_be.controllers;
 
+import com.trustrace.tiles_hub_be.model.collections.dashboard.EmployeeOverviewMetrics;
 import com.trustrace.tiles_hub_be.model.collections.dashboard.OverviewMetrics;
 import com.trustrace.tiles_hub_be.model.collections.dashboard.UnderReviewDamageMetrics;
 import com.trustrace.tiles_hub_be.model.responseWrapper.ApiResponse;
@@ -37,5 +38,13 @@ public class DashboardController {
         Integer totalLowStocks = dashboardService.getTotalLowStocks();
         return ResponseEntity.ok(ResponseUtil.success("Total low stock fetched", totalLowStocks, null));
     }
+
+    @GetMapping("/employee-overview-metrics")
+    public ResponseEntity<ApiResponse<EmployeeOverviewMetrics>> getEmployeeOverviewMetrics() {
+        EmployeeOverviewMetrics employeeOverviewMetrics = dashboardService.getEmployeeOverviewMetrics();
+        return ResponseEntity.ok(ResponseUtil.success("Overview Metrics Data fetched", employeeOverviewMetrics, null));
+    }
+
+
 
 }

@@ -48,6 +48,10 @@ public class OrderDao {
         return orderTemplate.getTotalPendingOrders();
     }
 
+    public int getTotalPickingOrders() {
+        return orderTemplate.getTotalPickingOrders();
+    }
+
     public int getTotalOrders() {
         return orderTemplate.getTotalOrders();
     }

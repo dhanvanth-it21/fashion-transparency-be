@@ -34,8 +34,8 @@ public class PurchaseDao {
     }
 
 
-    public Page<Purchase> getAllPurchases(int page, int size, String sortBy, String sortDirection, String search) {
-        return purchaseTemplate.getAllPurchases(page, size, sortBy, sortDirection, search);
+    public Page<Purchase> getAllPurchases(int page, int size, String sortBy, String sortDirection, String search, String email) {
+        return purchaseTemplate.getAllPurchases(page, size, sortBy, sortDirection, search, email);
     }
 
 

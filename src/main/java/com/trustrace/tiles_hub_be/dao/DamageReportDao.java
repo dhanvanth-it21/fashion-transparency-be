@@ -40,8 +40,8 @@ public class DamageReportDao {
         return damageReportTemplate.findByStatus(underReview);
     }
 
-    public Page<DamageReport> getAllDamageReports(int page, int size, String sortBy, String sortDirection, String search, DamageStatus filterBy) {
-        return damageReportTemplate.getAllDamageReports(page, size, sortBy, sortDirection, search, filterBy);
+    public Page<DamageReport> getAllDamageReports(int page, int size, String sortBy, String sortDirection, String search, DamageStatus filterBy, String email) {
+        return damageReportTemplate.getAllDamageReports(page, size, sortBy, sortDirection, search, filterBy, email);
     }
 
     public List<DamageReport> findByOrderId(String orderId) {
@@ -67,4 +67,22 @@ public class DamageReportDao {
     public int getTotalUnseenDamagesReportedForManufacturer() {
         return damageReportTemplate.getTotalUnderReviewDamageReportsForManufacturer();
     }
+
+    public int getTotalDamageReports(String email) {
+        return damageReportTemplate.getTotalDamageReports(email);
+    }
+
+    public int getTotalApprovedDamageReports(String email) {
+        return damageReportTemplate.getTotalApprovedDamageReports(email);
+    }
+
+    public int getTotalRejectedDamageReports(String email) {
+        return damageReportTemplate.getTotalRejectedDamageReports(email);
+    }
+
+    public int getTotalUnderReviewDamageReports(String email) {
+        return damageReportTemplate.getTotalUnderReviewDamageReports(email);
+    }
+
+
 }

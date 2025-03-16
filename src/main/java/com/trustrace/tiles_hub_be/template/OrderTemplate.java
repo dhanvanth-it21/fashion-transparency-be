@@ -86,4 +86,10 @@ public class OrderTemplate {
     public int getTotalOrders() {
         return (int) mongoTemplate.count(new Query(), Order.class);
     }
+
+    public int getTotalPickingOrders() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("status").is(OrderStatus.PICKING));
+        return (int) mongoTemplate.count(query, Order.class);
+    }
 }

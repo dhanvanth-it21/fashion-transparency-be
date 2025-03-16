@@ -4,6 +4,7 @@ import com.trustrace.tiles_hub_be.dao.UserEntityDao;
 import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import com.trustrace.tiles_hub_be.model.user.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -33,8 +34,8 @@ public class UserEntityService {
         return userEntity;
     }
 
-    public Optional<UserEntity> findByEmail(String email) {
-        Optional<UserEntity> userEntity = userEntityDao.findByEmail(email);
+    public UserEntity findByEmail(String email) {
+        UserEntity userEntity = userEntityDao.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User Not Found with email id: " + email));
         return userEntity;
     }
 

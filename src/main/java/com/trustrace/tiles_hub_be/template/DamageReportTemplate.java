@@ -4,6 +4,8 @@ import com.trustrace.tiles_hub_be.model.collections.damage.DamageLocation;
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageReport;
 import com.trustrace.tiles_hub_be.model.collections.damage.DamageStatus;
 import com.trustrace.tiles_hub_be.model.collections.tiles_list.Order;
+import com.trustrace.tiles_hub_be.model.user.Role;
+import com.trustrace.tiles_hub_be.model.user.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -44,11 +46,18 @@ public class DamageReportTemplate {
         return mongoTemplate.find(new Query(Criteria.where("status").is(underReview)), DamageReport.class);
     }
 
-    public Page<DamageReport> getAllDamageReports(int page, int size, String sortBy, String sortDirection, String search, DamageStatus filterBy) {
+    public Page<DamageReport> getAllDamageReports(int page, int size, String sortBy, String sortDirection, String search, DamageStatus filterBy, String email) {
         Sort.Direction direction = sortDirection.toUpperCase().equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
         Query query = new Query();
+
+        System.out.println("Employee");
+        if (getRoleByEmail(email)) {
+            System.out.println(email);
+            query.addCriteria(Criteria.where("reportedBy").is(email));
+        }
+
         if(search == null || search.equals("")) {
             //nothing to do
         }
@@ -68,6 +77,7 @@ public class DamageReportTemplate {
         query.with(pageable);
 
         List<DamageReport> damageReports = mongoTemplate.find(query, DamageReport.class);
+        System.out.println(damageReports);
         return new PageImpl<>(damageReports, pageable, total);
     }
 
@@ -101,6 +111,46 @@ public class DamageReportTemplate {
     public int getTotalUnderReviewDamageReportsForManufacturer() {
         Query query = new Query();
         query.addCriteria(Criteria.where("status").is(DamageStatus.UNDER_REVIEW).and("damageLocation").is(DamageLocation.FROM_MANUFACTURER));
+        return (int) mongoTemplate.count(query, DamageReport.class);
+    }
+
+    //helper
+    public boolean getRoleByEmail(String email) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("email").is(email));
+        UserEntity userEntity = mongoTemplate.findOne(query, UserEntity.class);
+        if (userEntity.getRoles().size() == 1) {
+            for (Role role : userEntity.getRoles()) {
+                if ("ROLE_EMPLOYEE".equals(role.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    public int getTotalDamageReports(String email) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("reportedBy").is(email));
+        return (int) mongoTemplate.count(query, DamageReport.class);
+    }
+
+    public int getTotalApprovedDamageReports(String email) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("status").is(DamageStatus.APPROVED).and("reportedBy").is(email));
+        return (int) mongoTemplate.count(query, DamageReport.class);
+    }
+
+    public int getTotalRejectedDamageReports(String email) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("status").is(DamageStatus.REJECTED).and("reportedBy").is(email));
+        return (int) mongoTemplate.count(query, DamageReport.class);
+    }
+
+    public int getTotalUnderReviewDamageReports(String email) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("status").is(DamageStatus.UNDER_REVIEW).and("reportedBy").is(email));
         return (int) mongoTemplate.count(query, DamageReport.class);
     }
 }

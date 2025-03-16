@@ -13,6 +13,8 @@ import com.trustrace.tiles_hub_be.model.collections.tiles_list.PurchaseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,7 +47,7 @@ public class PurchaseService {
                 .purchaseId(purchaseId)
                 .purchaseId(newPurchaseDto.getPurchaseId())
                 .supplierId(newPurchaseDto.getSupplierId())
-                .recordedByUserId("67bbfe2f8d85f862f666bb10")
+                .recordedBy(getAuthenticatedUserEmail())
                 .itemList(newPurchaseDto.getItemList())
                 .damagePercentage(newPurchaseDto.getDamagePercentage())
                 .status(PurchaseStatus.PENDING)
@@ -60,8 +62,8 @@ public class PurchaseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Purchase not found with ID: " + id));
         return PurchaseDetail.builder()
                 .purchaseId(purchase.getPurchaseId())
-                .recordedByUserName(userEntityService.findById(purchase.getRecordedByUserId()).getName())
-                .approvedByUserName(getApprovedUserName(purchase.getApprovedByUserId()))
+                .recordedBy(purchase.getRecordedBy())
+                .approvedBy(getApprovedBy(purchase.getApprovedBy()))
                 .brandName(supplierService.getSupplierById(purchase.getSupplierId()).getBrandName())
                 .createdAt(purchase.getCreatedAt())
                 .damagePercentage(purchase.getDamagePercentage())
@@ -71,12 +73,12 @@ public class PurchaseService {
 
     }
 
-    private String getApprovedUserName(String approvedByUserId) {
-        if(approvedByUserId == null) {
-            return "No yet Approved";
+    private String getApprovedBy(String approvedBy) {
+        if(approvedBy == null) {
+            return "Not yet Approved";
         }
         else {
-            return userEntityService.findById(approvedByUserId).getName();
+            return approvedBy;
         }
     }
 
@@ -99,15 +101,15 @@ public class PurchaseService {
     }
 
     public Page<PurchaseTableDto> getAllPurchasesTableDetails(int page, int size, String sortBy, String sortDirection, String search) {
-        Page<Purchase> paginated = purchaseDao.getAllPurchases(page, size, sortBy, sortDirection, search);
+        String email = getAuthenticatedUserEmail();
+        Page<Purchase> paginated = purchaseDao.getAllPurchases(page, size, sortBy, sortDirection, search, email);
         List<Purchase> purchases = paginated.getContent();
         List<PurchaseTableDto> purchaseTableDtos = purchases.stream()
                 .map(purchase -> PurchaseTableDto.builder()
                         ._id(purchase.get_id())
                         .purchaseId(purchase.getPurchaseId())
                         .createdAt(purchase.getCreatedAt())
-                        .recordedByUserId(purchase.getRecordedByUserId())
-                        .recordedByUserName(userEntityService.findById("67bbfe2f8d85f862f666bb10").getName())
+                        .recordedBy(purchase.getRecordedBy())
                         .brandName(supplierService.getSupplierById(purchase.getSupplierId()).getBrandName())
                         .status(purchase.getStatus())
                         .build())
@@ -124,7 +126,7 @@ public class PurchaseService {
                 throw new ResourceNotFoundException("Purchase already verified");
             }
             purchase.setStatus(PurchaseStatus.valueOf(status));
-            purchase.setApprovedByUserId("67bbfe2f8d85f862f666bb10");
+            purchase.setApprovedBy(getAuthenticatedUserEmail());
             if (PurchaseStatus.valueOf(status) == PurchaseStatus.VERIFIED) {
                 tileService.updateStockByPurchaseItems(purchase.getItemList());
             }
@@ -171,5 +173,10 @@ public class PurchaseService {
                         .brandName(supplierService.getSupplierById(purchase.getSupplierId()).getBrandName())
                         .build())
                 .toList();
+    }
+
+    private String getAuthenticatedUserEmail() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ((UserDetails) principal).getUsername();
     }
 }
