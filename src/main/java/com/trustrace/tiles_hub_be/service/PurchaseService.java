@@ -109,7 +109,7 @@ public class PurchaseService {
                         ._id(purchase.get_id())
                         .purchaseId(purchase.getPurchaseId())
                         .createdAt(purchase.getCreatedAt())
-                        .recordedBy(purchase.getRecordedBy())
+                        .recordedBy(getAuthenticatedUserEmail())
                         .brandName(supplierService.getSupplierById(purchase.getSupplierId()).getBrandName())
                         .status(purchase.getStatus())
                         .build())
