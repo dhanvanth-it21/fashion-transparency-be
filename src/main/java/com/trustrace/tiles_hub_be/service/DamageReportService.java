@@ -230,6 +230,8 @@ public class DamageReportService {
                 .damageReportId(damageReport.getDamageReportId())
                 .damageReportId(damageReport.get_id())
                 .damageLocation(damageReport.getDamageLocation())
+                .orderId(damageReport.getOrderId())
+                .purchaseId(damageReport.getPurchaseId())
                 .qty(damageReport.getQty())
                 .status(damageReport.getStatus())
                 .skuCode(tileDao.findById(damageReport.getTileId()).getSkuCode())

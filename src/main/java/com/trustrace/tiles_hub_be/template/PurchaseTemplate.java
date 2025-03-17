@@ -43,10 +43,6 @@ public class PurchaseTemplate {
         Sort.Direction direction = sortDirection.toUpperCase().equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
-
-
-
-
         Query query = new Query();
         if (getRoleByEmail(email)) {
             query.addCriteria(Criteria.where("recordedBy").is(email));
@@ -56,7 +52,8 @@ public class PurchaseTemplate {
             //nothing to do
         } else {
             query.addCriteria(new Criteria().orOperator(
-                    Criteria.where("status").regex(search, "i")
+                    Criteria.where("status").regex(search, "i"),
+                    Criteria.where("purchaseId").regex(search, "i")
             ));
         }
 

@@ -47,7 +47,8 @@ public class OrderTemplate {
         } else {
             query.addCriteria(new Criteria().orOperator(
                     Criteria.where("shopName").regex(search, "i"),
-                    Criteria.where("status").regex(search, "i")
+                    Criteria.where("status").regex(search, "i"),
+                    Criteria.where("orderId").regex(search, "i")
             ));
         }
 

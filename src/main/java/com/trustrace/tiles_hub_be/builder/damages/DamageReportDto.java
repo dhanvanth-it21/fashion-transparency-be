@@ -17,6 +17,8 @@ public class DamageReportDto {
     private String skuCode;
     private String reportedBy;
     private String approvedBy;
+    private String purchaseId;
+    private String orderId;
     private DamageLocation damageLocation;
     private int qty;
     private DamageStatus status;
