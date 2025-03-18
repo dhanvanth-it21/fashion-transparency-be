@@ -1,5 +1,6 @@
 package com.trustrace.tiles_hub_be.usage;
 
+import com.trustrace.tiles_hub_be.billing.ApiUsageLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -10,8 +11,11 @@ public class WebMvcConfig  implements WebMvcConfigurer {
 
     @Autowired
     private ApiUsageTracker apiUsageTracker;
+
+    @Autowired
+    private ApiUsageLogger apiUsageLogger;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(apiUsageTracker);
+        registry.addInterceptor(apiUsageLogger);
     }
 }
