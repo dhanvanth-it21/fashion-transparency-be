@@ -97,7 +97,7 @@ public class WebSecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:4200")); // Change this as needed
+                    config.setAllowedOrigins(List.of("http://localhost:4200", "https://tilesapi.loca.lt")); // Change this as needed
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
                     config.setAllowCredentials(true);
@@ -114,6 +114,7 @@ public class WebSecurityConfig {
                         // Configure authorization for HTTP requests
 //                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/payment/webhook").permitAll()
 //                         Allow public access to auth endpoints
                         .anyRequest().authenticated());
         // Require authentication for any other request

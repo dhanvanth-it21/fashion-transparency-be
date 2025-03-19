@@ -19,6 +19,9 @@ public class ApiUsageLogger implements HandlerInterceptor {
         if (request.getRequestURI().contains("signin")) {
             return true;
         }
+        if (request.getRequestURI().contains("api/payment/webhook")) {
+            return true;
+        }
 
         String email = getAuthenticatedUserEmail();
 

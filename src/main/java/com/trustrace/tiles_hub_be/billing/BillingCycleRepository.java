@@ -18,6 +18,12 @@ public class BillingCycleRepository {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    public Optional<BillingCycle> findByPaymentId(String paymentId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("paymentLinkId").is(paymentId));
+        return Optional.ofNullable(mongoTemplate.findOne(query, BillingCycle.class));
+    }
+
     public BillingCycle save(BillingCycle billingCycle) {
         return mongoTemplate.save(billingCycle);
     }

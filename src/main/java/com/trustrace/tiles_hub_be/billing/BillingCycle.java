@@ -22,6 +22,8 @@ public class BillingCycle {
     private Date billingCycleStart;
     private Date billingCycleEnd;
     private Map<String, ApiUsageDetails> apiUsage;
+    private String paymentLinkId;
+    private String paymentLink;
     private boolean payment;
     private boolean active;
 }

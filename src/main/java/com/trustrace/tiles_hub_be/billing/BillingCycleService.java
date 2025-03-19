@@ -1,5 +1,6 @@
 package com.trustrace.tiles_hub_be.billing;
 
+import com.trustrace.tiles_hub_be.exceptionHandlers.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,8 +27,6 @@ public class BillingCycleService {
     }
 
 
-
-
     public void logApiUsage(String method) {
         Optional<BillingCycle> currentBillingCycle = getCurrentBillingCycle();
         BillingCycle billingCycle;
@@ -37,24 +36,24 @@ public class BillingCycleService {
             billingCycle = createNewBillingCycle(null);
         }
 
-            if (hasBillingCycleEnded(billingCycle)) {
-                billingCycle = createNewBillingCycle(billingCycle);
-            }
+        if (hasBillingCycleEnded(billingCycle)) {
+            billingCycle = createNewBillingCycle(billingCycle);
+        }
 
         if (billingCycle.getApiUsage() == null) {
             billingCycle.setApiUsage(new HashMap<>());
         }
 
 
-            ApiUsageDetails apiUsageDetails = billingCycle.getApiUsage().getOrDefault(method, new ApiUsageDetails(0,0));
+        ApiUsageDetails apiUsageDetails = billingCycle.getApiUsage().getOrDefault(method, new ApiUsageDetails(0, 0));
 
-            apiUsageDetails.setCount(apiUsageDetails.getCount() + 1);
-            apiUsageDetails.setPricePerRequest(0.30);
+        apiUsageDetails.setCount(apiUsageDetails.getCount() + 1);
+        apiUsageDetails.setPricePerRequest(0.30);
 
 
-            billingCycle.getApiUsage().put(method, apiUsageDetails);
+        billingCycle.getApiUsage().put(method, apiUsageDetails);
 
-            billingCycleDao.save(billingCycle);
+        billingCycleDao.save(billingCycle);
 
     }
 
@@ -88,7 +87,7 @@ public class BillingCycleService {
                 .plusMonths(1)
                 .withDayOfMonth(1)
                 .minusDays(1)
-                .atTime(23, 59, 59)  // Ensures it includes full day
+                .atTime(23, 59, 59)
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
     }
@@ -122,7 +121,7 @@ public class BillingCycleService {
         for (ApiUsageDetails apiUsageDetails : billingCycle.getApiUsage().values()) {
             totalAmount += Math.round(apiUsageDetails.getCount() * apiUsageDetails.getPricePerRequest() * 100.0) / 100.0;
         }
-        return totalAmount;
+        return Math.round(totalAmount * 100.0) / 100.0;
     }
 
     public BillingCycleDetailDto getBillingCycleDetailById(String id) {
@@ -144,5 +143,32 @@ public class BillingCycleService {
                         .totalAmount(Math.round(entry.getValue().getCount() * entry.getValue().getPricePerRequest() * 100.0) / 100.0)
                         .build()
                 ).toList();
+    }
+
+
+    public BillingCycle updatePaymentLinkId(String id, String paymentLinkId) {
+        BillingCycle billingCycle = billingCycleDao.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No Bill found")
+        );
+        billingCycle.setPaymentLinkId(paymentLinkId);
+        return billingCycleDao.save(billingCycle);
+    }
+
+    public BillingCycle updatePaymentLink(String id, String paymentLink) {
+        BillingCycle billingCycle = billingCycleDao.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No Bill found")
+        );
+        billingCycle.setPaymentLink(paymentLink);
+        return billingCycleDao.save(billingCycle);
+    }
+
+
+    public BillingCycle findByPaymentId(Object id) {
+        String paymentId = (String) id;
+        return  billingCycleDao.findByPaymentId(paymentId).orElseThrow(() -> new ResourceNotFoundException("No payment Link found provided by the webhook"));
+    }
+
+    public BillingCycle save(BillingCycle billingCycle) {
+        return billingCycleDao.save(billingCycle);
     }
 }

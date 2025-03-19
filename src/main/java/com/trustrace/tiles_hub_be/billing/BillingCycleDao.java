@@ -12,6 +12,10 @@ public class BillingCycleDao {
     @Autowired
     private BillingCycleRepository billingCycleRepository;
 
+    public Optional<BillingCycle> findByPaymentId(String paymentId) {
+        return billingCycleRepository.findByPaymentId(paymentId);
+    }
+
     public BillingCycle save(BillingCycle billingCycle) {
         return billingCycleRepository.save(billingCycle);
     }
