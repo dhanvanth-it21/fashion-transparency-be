@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.trustrace</groupId>
-    <artifactId>tiles-hub-be</artifactId>
+    <artifactId>fashion-transparency-be</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>tiles-hub-be</name>
     <description>Demo project for Spring Boot</description>
